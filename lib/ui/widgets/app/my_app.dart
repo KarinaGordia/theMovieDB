@@ -73,7 +73,8 @@ class MyApp extends StatelessWidget {
           return const MoviePage(movieId: 0, primaryColor: Colors.black);
         },
       },
-      initialRoute: '/main_page',
+      // initialRoute: '/main_page',
+      initialRoute: '/authorization_page',
       // onGenerateRoute: (RouteSettings settings) {
       //   return MaterialPageRoute<void>(builder: (context) {
       //     return Scaffold(

@@ -31,9 +31,4 @@ class AuthProvider extends InheritedNotifier {
     final widget = context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
     return widget is AuthProvider ? widget : null;
   }
-
-  @override
-  bool updateShouldNotify(AuthProvider oldWidget) {
-    return true;
-  }
 }
