@@ -11,6 +11,7 @@ class AuthModel extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   bool _isAuthInProgress = false;
+  bool get isAuthInProgress => _isAuthInProgress;
   bool get canStartAuth => !_isAuthInProgress;
 
   Future<void> auth(BuildContext context) async{

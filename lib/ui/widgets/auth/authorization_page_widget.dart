@@ -142,7 +142,7 @@ class _AuthorizationForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = AuthProvider.read(context)?.model;
-    
+
     const textFieldHeaderTextStyle = TextStyle(
       fontSize: 16,
       color: Color.fromRGBO(33, 37, 41, 1),
@@ -215,15 +215,24 @@ class _AuthButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = AuthProvider.watch(context)?.model;
     final onPressed = model?.canStartAuth == true ? () => model?.auth(context) : null;
+    final child = model?.isAuthInProgress == true
+        ? const SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          )
+        : const Text(
+            'Login',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          );
     return FilledButton(
       onPressed: onPressed,
-      child: const Text(
-        'Login',
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
+      child: child,
     );
   }
 }
@@ -237,7 +246,7 @@ class _ErrorMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final errorMessage = AuthProvider.watch(context)?.model.errorMessage;
 
-    if(errorMessage == null) return const SizedBox.shrink();
+    if (errorMessage == null) return const SizedBox.shrink();
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
