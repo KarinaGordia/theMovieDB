@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_widget.dart';
+import 'package:the_movie_db/ui/widgets/news/news_widget.dart';
+import 'package:the_movie_db/ui/widgets/tv_show_list/tv_show_list.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -46,9 +48,9 @@ class _MainPageState extends State<MainPage> {
         child: IndexedStack(
           index: _selectedDestination,
           children: [
-            Text('News'),
+            NewsWidget(),
             MovieListWidget(),
-            Text('TV Shows'),
+            TWShowListWidget(),
             Text('People'),
           ],
         ),
