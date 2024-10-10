@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:the_movie_db/ui/widgets/widgets.dart';
 import 'package:the_movie_db/ui/theme/theme.dart';
 
@@ -7,7 +8,8 @@ import '../auth/auth_model.dart';
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  static final mainNavigation = MainNavigation();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -55,35 +57,9 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      routes: {
-        '/authorization_page': (context) => AuthProvider(
-              model: AuthModel(),
-              child: const AuthorizationPage(),
-            ),
-        '/main_page': (context) => const MainPage(),
-        '/main_page/movie_details': (context) {
-          final arguments = ModalRoute.of(context)?.settings.arguments;
-          if (arguments is int) {
-            return MoviePage(
-              movieId: arguments,
-              primaryColor: const Color.fromRGBO(10, 31, 52, 1),
-            );
-          }
-
-          return const MoviePage(movieId: 0, primaryColor: Colors.black);
-        },
-      },
-      // initialRoute: '/main_page',
-      initialRoute: '/authorization_page',
-      // onGenerateRoute: (RouteSettings settings) {
-      //   return MaterialPageRoute<void>(builder: (context) {
-      //     return Scaffold(
-      //       body: Center(
-      //         child: Text('Navigation error'),
-      //       ),
-      //     );
-      //   });
-      // },
+      routes: mainNavigation.routes,
+      initialRoute: mainNavigation.initialRoute(false),
+      onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }
 }
