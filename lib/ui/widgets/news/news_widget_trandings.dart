@@ -39,7 +39,7 @@ class _NewsWidgetTrandingsState extends State<NewsWidgetTrandings> {
         ),
         const SizedBox(height: 20),
         SizedBox(
-          height: 306,
+          height: 315,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: 10,

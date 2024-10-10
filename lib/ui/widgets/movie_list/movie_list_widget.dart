@@ -18,14 +18,14 @@ class Movie {
 }
 
 class MovieListWidget extends StatefulWidget {
-  MovieListWidget({super.key});
+  const MovieListWidget({super.key});
 
   @override
   State<MovieListWidget> createState() => _MovieListWidgetState();
 }
 
 class _MovieListWidgetState extends State<MovieListWidget> {
-  List<Movie> _movies = <Movie>[
+  final _movies = <Movie>[
     Movie(
       id: 1,
       imageName: AppImages.godzilla,
@@ -127,7 +127,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
 }
 
 class CardMovie extends StatelessWidget {
-  CardMovie({
+  const CardMovie({
     super.key,
     this.onTap,
     required this.movie,
