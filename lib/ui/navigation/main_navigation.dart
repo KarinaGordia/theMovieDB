@@ -3,9 +3,9 @@ import 'package:the_movie_db/ui/widgets/auth/auth_model.dart';
 import 'package:the_movie_db/ui/widgets/widgets.dart';
 
 class MainNavigationNames {
-  static const auth = '/authorization_page';
-  static const mainPage = '/main_page';
-  static const movieDetails = '/main_page/movie_details';
+  static const auth = 'authorization_page';
+  static const mainPage = '/';
+  static const movieDetails = '/movie_details';
 }
 
 class MainNavigation {
@@ -14,11 +14,11 @@ class MainNavigation {
   }
 
   final routes = <String, Widget Function(BuildContext)>{
-    '/authorization_page': (context) => AuthProvider(
+    MainNavigationNames.auth: (context) => AuthProvider(
           model: AuthModel(),
           child: const AuthorizationPage(),
         ),
-    '/main_page': (context) => const MainPage(),
+    MainNavigationNames.mainPage: (context) => const MainPage(),
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings) {
