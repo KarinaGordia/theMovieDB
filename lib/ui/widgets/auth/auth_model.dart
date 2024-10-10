@@ -14,10 +14,10 @@ class AuthModel extends ChangeNotifier {
   bool get isAuthInProgress => _isAuthInProgress;
   bool get canStartAuth => !_isAuthInProgress;
 
-  Future<void> auth(BuildContext context) async{
+  Future<void> auth(BuildContext context) async {
     final login = loginTextController.text;
-    final password =passwordTextController.text;
-    if(login.isEmpty || password.isEmpty) {
+    final password = passwordTextController.text;
+    if (login.isEmpty || password.isEmpty) {
       _errorMessage = 'Please, fill in the username and the password fields';
       notifyListeners();
       return;
@@ -27,15 +27,25 @@ class AuthModel extends ChangeNotifier {
     _isAuthInProgress = true;
     notifyListeners();
 
-    final sessionId = _apiClient.auth(userName: login, password: password);
+    String? sessionId;
+    try {
+      sessionId = await _apiClient.auth(userName: login, password: password);
+    } catch (e) {
+      _errorMessage = 'Incorrect username or password';
+    }
+
     _isAuthInProgress = false;
-    notifyListeners();
+
+    if(_errorMessage !=null || sessionId == null) {
+      notifyListeners();
+    }
   }
 }
 
 class AuthProvider extends InheritedNotifier {
   final AuthModel model;
-  const AuthProvider ({
+
+  const AuthProvider({
     super.key,
     required this.model,
     required super.child,
@@ -45,8 +55,9 @@ class AuthProvider extends InheritedNotifier {
     return context.dependOnInheritedWidgetOfExactType<AuthProvider>();
   }
 
-    static AuthProvider? read(BuildContext context) {
-    final widget = context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
+  static AuthProvider? read(BuildContext context) {
+    final widget =
+        context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
     return widget is AuthProvider ? widget : null;
   }
 }
