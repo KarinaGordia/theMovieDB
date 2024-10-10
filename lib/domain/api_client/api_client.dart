@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+//karinagordya
+//login_FoR_flutter
+
 class ApiClient {
   final _client = HttpClient();
 
@@ -18,7 +21,7 @@ class ApiClient {
 
   Uri _makeUri(String path, [Map<String, dynamic>? parameters]) {
     final uri = Uri.parse(
-        '$_host/$path');
+        '$_host$path');
 
     if(parameters !=null) {
       return uri.replace(queryParameters: parameters);
@@ -28,10 +31,13 @@ class ApiClient {
   }
 
   Future<String> _makeToken() async {
-    final url = _makeUri('authentication/token/new', {'api_key' :_apiKey});
+    final url = _makeUri(
+      '/authentication/token/new',
+      <String, dynamic>{'api_key': _apiKey},
+    );
     final request = await _client.getUrl(url);
     final response = await request.close();
-    final json = response.jsonDecode() as Map<String, dynamic>;
+    final json = (await response.jsonDecode()) as Map<String, dynamic>;
     final token = json['request_token'] as String;
     return token;
   }
@@ -41,7 +47,7 @@ class ApiClient {
     required String password,
     required String requestToken,
   }) async {
-    final url = _makeUri('authentication/token/validate_with_login', {'api_key' :_apiKey});
+    final url = _makeUri('/authentication/token/validate_with_login', <String, dynamic>{'api_key': _apiKey});
     final parameters = <String, dynamic>{
       'username':userName,
       'password':password,
@@ -53,7 +59,7 @@ class ApiClient {
     request.write(jsonEncode(parameters));
     final response = await request.close();
 
-    final json = response.jsonDecode() as Map<String, dynamic>;
+    final json = (await response.jsonDecode()) as Map<String, dynamic>;
     final token = json['request_token'] as String;
     return token;
   }
@@ -61,7 +67,7 @@ class ApiClient {
   Future<String> _makeSession({
     required String requestToken,
   }) async {
-    final url = _makeUri('authentication/session/new', {'api_key' :_apiKey});
+    final url = _makeUri('/authentication/session/new', <String, dynamic>{'api_key': _apiKey});
     final parameters = <String, dynamic>{
       'request_token':requestToken
     };
@@ -70,10 +76,7 @@ class ApiClient {
     request.headers.contentType = ContentType.json;
     request.write(jsonEncode(parameters));
     final response = await request.close();
-
-    final json = response.jsonDecode() as Map<String, dynamic>;
-    //если не работает добавить await
-    //final json = (await response.jsonDecode()) as Map<String, dynamic>;
+    final json = (await response.jsonDecode()) as Map<String, dynamic>;
 
     final sessionId = json['session_id'] as String;
     return sessionId;
@@ -81,10 +84,10 @@ class ApiClient {
 }
 
 extension HttpClientResponseJsonDecode on HttpClientResponse {
-  dynamic jsonDecode() {
-    transform(utf8.decoder)
+  Future<dynamic> jsonDecode() async {
+    return transform(utf8.decoder)
         .toList()
         .then((value) => value.join())
-        .then((v) => json.decode(v));
+        .then<dynamic>((v) => json.decode(v));
   }
 }
