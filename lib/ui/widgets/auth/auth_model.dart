@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
+import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 
 class AuthModel extends ChangeNotifier {
   final _apiClient = ApiClient();
+  final _sessionDataProvider = SessionDataProvider();
 
   final loginTextController = TextEditingController();
   final passwordTextController = TextEditingController();
@@ -38,7 +40,10 @@ class AuthModel extends ChangeNotifier {
 
     if(_errorMessage !=null || sessionId == null) {
       notifyListeners();
+      return;
     }
+
+    _sessionDataProvider.sessionId = sessionId;
   }
 }
 
