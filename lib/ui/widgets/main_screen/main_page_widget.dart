@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_widget.dart';
 import 'package:the_movie_db/ui/widgets/news/news_widget.dart';
 import 'package:the_movie_db/ui/widgets/tv_show_list/tv_show_list.dart';
@@ -28,9 +29,9 @@ class _MainPageState extends State<MainPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => SessionDataProvider().setSessionId(null),
             icon: Icon(
-              Icons.person,
+              Icons.logout_outlined,
             ),
           ),
           IconButton(
