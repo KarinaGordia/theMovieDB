@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
@@ -43,7 +45,8 @@ class AuthModel extends ChangeNotifier {
       return;
     }
 
-    _sessionDataProvider.sessionId = sessionId;
+    await _sessionDataProvider.setSessionId(sessionId);
+    unawaited(Navigator.of(context).pushNamed('/main_page'));
   }
 }
 
