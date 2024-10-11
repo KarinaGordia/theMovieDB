@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/widgets/auth/auth_model.dart';
+import 'package:the_movie_db/ui/widgets/main_page/main_page_model.dart';
 import 'package:the_movie_db/ui/widgets/widgets.dart';
 
 class MainNavigationNames {
@@ -19,7 +20,10 @@ class MainNavigation {
           model: AuthModel(),
           child: const AuthorizationPage(),
         ),
-    MainNavigationNames.mainPage: (context) => const MainPage(),
+    MainNavigationNames.mainPage: (context) => NotifierProvider(
+          model: MainPageModel(),
+          child: const MainPage(),
+        ),
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings) {
