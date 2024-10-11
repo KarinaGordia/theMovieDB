@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/widgets/auth/auth_model.dart';
 import 'package:the_movie_db/ui/widgets/widgets.dart';
 
@@ -14,7 +15,7 @@ class MainNavigation {
   }
 
   final routes = <String, Widget Function(BuildContext)>{
-    MainNavigationNames.auth: (context) => AuthProvider(
+    MainNavigationNames.auth: (context) => NotifierProvider(
           model: AuthModel(),
           child: const AuthorizationPage(),
         ),

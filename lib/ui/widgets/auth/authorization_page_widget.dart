@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/widgets/auth/auth_model.dart';
 
 class AuthorizationPage extends StatefulWidget {
@@ -137,11 +138,11 @@ class _HeaderWidget extends StatelessWidget {
 }
 
 class _AuthorizationForm extends StatelessWidget {
-  const _AuthorizationForm({super.key});
+  const _AuthorizationForm();
 
   @override
   Widget build(BuildContext context) {
-    final model = AuthProvider.read(context)?.model;
+    final model = NotifierProvider.read<AuthModel>(context);
 
     const textFieldHeaderTextStyle = TextStyle(
       fontSize: 16,
@@ -207,13 +208,11 @@ class _AuthorizationForm extends StatelessWidget {
 }
 
 class _AuthButtonWidget extends StatelessWidget {
-  const _AuthButtonWidget({
-    super.key,
-  });
+  const _AuthButtonWidget();
 
   @override
   Widget build(BuildContext context) {
-    final model = AuthProvider.watch(context)?.model;
+    final model = NotifierProvider.watch<AuthModel>(context);
     final onPressed = model?.canStartAuth == true ? () => model?.auth(context) : null;
     final child = model?.isAuthInProgress == true
         ? const SizedBox(
@@ -238,13 +237,11 @@ class _AuthButtonWidget extends StatelessWidget {
 }
 
 class _ErrorMessageWidget extends StatelessWidget {
-  const _ErrorMessageWidget({
-    super.key,
-  });
+  const _ErrorMessageWidget();
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = AuthProvider.watch(context)?.model.errorMessage;
+    final errorMessage = NotifierProvider.watch<AuthModel>(context)?.errorMessage;
 
     if (errorMessage == null) return const SizedBox.shrink();
 

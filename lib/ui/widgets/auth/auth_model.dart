@@ -50,23 +50,3 @@ class AuthModel extends ChangeNotifier {
     unawaited(Navigator.of(context).pushReplacementNamed(MainNavigationNames.mainPage));
   }
 }
-
-class AuthProvider extends InheritedNotifier {
-  final AuthModel model;
-
-  const AuthProvider({
-    super.key,
-    required this.model,
-    required super.child,
-  }) : super(notifier: model);
-
-  static AuthProvider? watch(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AuthProvider>();
-  }
-
-  static AuthProvider? read(BuildContext context) {
-    final widget =
-        context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
-    return widget is AuthProvider ? widget : null;
-  }
-}
