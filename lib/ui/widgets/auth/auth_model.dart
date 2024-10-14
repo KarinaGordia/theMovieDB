@@ -33,15 +33,25 @@ class AuthModel extends ChangeNotifier {
     notifyListeners();
 
     String? sessionId;
+
     try {
       sessionId = await _apiClient.auth(userName: login, password: password);
+    } on ApiClientException catch (e) {
+      switch (e.type) {
+        case ApiClientExceptionType.network:
+          _errorMessage = 'The server is unavailable. Check your network connection.';
+        case ApiClientExceptionType.auth:
+          _errorMessage = 'Incorrect username or password';
+        case ApiClientExceptionType.other:
+          _errorMessage = 'An error has occurred. Please try again later.';
+      }
     } catch (e) {
-      _errorMessage = 'Incorrect username or password';
+      _errorMessage = 'An error has occurred. Please try again later.';
     }
 
     _isAuthInProgress = false;
 
-    if(_errorMessage !=null || sessionId == null) {
+    if(_errorMessage != null || sessionId == null) {
       notifyListeners();
       return;
     }
