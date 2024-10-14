@@ -4,13 +4,13 @@ import 'dart:io';
 //karinagordya
 //login_FoR_flutter
 
-enum ApiClientExceptionType {network, auth, other}
+enum ApiClientExceptionType { network, auth, other }
+
 class ApiClientException implements Exception {
   final ApiClientExceptionType type;
 
   ApiClientException(this.type);
 }
-
 
 class ApiClient {
   final _client = HttpClient();
@@ -19,19 +19,21 @@ class ApiClient {
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = '0170708c03fdae05fbf2c02b9f0119ea';
 
-  Future<String> auth({required String userName,
-    required String password,}) async {
+  Future<String> auth({
+    required String userName,
+    required String password,
+  }) async {
     final token = await _makeToken();
-    final validatedToken = await _validateUser(userName: userName, password: password, requestToken: token);
+    final validatedToken = await _validateUser(
+        userName: userName, password: password, requestToken: token);
     final sessionId = await _makeSession(requestToken: validatedToken);
     return sessionId;
   }
 
   Uri _makeUri(String path, [Map<String, dynamic>? parameters]) {
-    final uri = Uri.parse(
-        '$_host$path');
+    final uri = Uri.parse('$_host$path');
 
-    if(parameters !=null) {
+    if (parameters != null) {
       return uri.replace(queryParameters: parameters);
     } else {
       return uri;
@@ -39,32 +41,15 @@ class ApiClient {
   }
 
   Future<String> _makeToken() async {
-    final url = _makeUri(
-      '/authentication/token/new',
-      <String, dynamic>{'api_key': _apiKey},
-    );
-    try {
-      final request = await _client.getUrl(url);
-      final response = await request.close();
-      final json = (await response.jsonDecode()) as Map<String, dynamic>;
-      if(response.statusCode == 401) {
-        final status = json['status_code'];
-        final code = status is int ? status : 0;
-        if(code == 30) {
-          throw ApiClientException(ApiClientExceptionType.auth);
-        } else {
-          throw ApiClientException(ApiClientExceptionType.other);
-        }
-      }
-      final token = json['request_token'] as String;
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final token = jsonMap['request_token'] as String;
       return token;
-    } on SocketException {
-      throw ApiClientException(ApiClientExceptionType.network);
-    } on ApiClientException {
-      rethrow;
-    } catch (e) {
-      throw ApiClientException(ApiClientExceptionType.other);
     }
+
+    final result = _get('/authentication/token/new', parser,
+        <String, dynamic>{'api_key': _apiKey});
+    return result;
   }
 
   Future<String> _validateUser({
@@ -72,67 +57,59 @@ class ApiClient {
     required String password,
     required String requestToken,
   }) async {
-    try {
-      final url = _makeUri('/authentication/token/validate_with_login', <String, dynamic>{'api_key': _apiKey});
-      final parameters = <String, dynamic>{
-        'username':userName,
-        'password':password,
-        'request_token':requestToken
-      };
-      final request = await _client.postUrl(url);
-
-      request.headers.contentType = ContentType.json;
-      request.write(jsonEncode(parameters));
-      final response = await request.close();
-      final json = (await response.jsonDecode()) as Map<String, dynamic>;
-      if(response.statusCode == 401) {
-        final status = json['status_code'];
-        final code = status is int ? status : 0;
-        if(code == 30) {
-          throw ApiClientException(ApiClientExceptionType.auth);
-        } else {
-          throw ApiClientException(ApiClientExceptionType.other);
-        }
-      }
-
-      final token = json['request_token'] as String;
+    final parameters = <String, dynamic>{
+      'username': userName,
+      'password': password,
+      'request_token': requestToken
+    };
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final token = jsonMap['request_token'] as String;
       return token;
-    } on SocketException {
-      throw ApiClientException(ApiClientExceptionType.network);
-    } on ApiClientException {
-      rethrow;
-    } catch (e) {
-      throw ApiClientException(ApiClientExceptionType.other);
     }
 
+    final result = _post(
+      '/authentication/token/validate_with_login',
+      parameters,
+      parser,
+      <String, dynamic>{'api_key': _apiKey},
+    );
+    return result;
   }
 
   Future<String> _makeSession({
     required String requestToken,
   }) async {
-    try {
-      final url = _makeUri('/authentication/session/new', <String, dynamic>{'api_key': _apiKey});
-      final parameters = <String, dynamic>{
-        'request_token':requestToken
-      };
-      final request = await _client.postUrl(url);
-
-      request.headers.contentType = ContentType.json;
-      request.write(jsonEncode(parameters));
-      final response = await request.close();
-      final json = (await response.jsonDecode()) as Map<String, dynamic>;
-      if(response.statusCode == 401) {
-        final status = json['status_code'];
-        final code = status is int ? status : 0;
-        if(code == 30) {
-          throw ApiClientException(ApiClientExceptionType.auth);
-        } else {
-          throw ApiClientException(ApiClientExceptionType.other);
-        }
-      }
-
-      final sessionId = json['session_id'] as String;
+    final parameters = <String, dynamic>{'request_token': requestToken};
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final sessionId = jsonMap['session_id'] as String;
       return sessionId;
+    }
+
+    final result = _post(
+      '/authentication/session/new',
+      parameters,
+      parser,
+      <String, dynamic>{'api_key': _apiKey},
+    );
+    return result;
+  }
+
+  Future<T> _get<T>(String path, T Function(dynamic json) parser,
+      [Map<String, dynamic>? parameters]) async {
+    final url = _makeUri(
+      path,
+      parameters,
+    );
+    try {
+      final request = await _client.getUrl(url);
+      final response = await request.close();
+      final json = (await response.jsonDecode());
+      _validateResponse(response, json);
+
+      final result = parser(json);
+      return result;
     } on SocketException {
       throw ApiClientException(ApiClientExceptionType.network);
     } on ApiClientException {
@@ -140,7 +117,49 @@ class ApiClient {
     } catch (e) {
       throw ApiClientException(ApiClientExceptionType.other);
     }
+  }
 
+  Future<T> _post<T>(
+      String path,
+      Map<String, dynamic> bodyParameters,
+      T Function(dynamic json) parser, [
+        Map<String, dynamic>? urlParameters,
+      ]) async {
+    try {
+      final url = _makeUri(
+        path,
+        urlParameters,
+      );
+      final request = await _client.postUrl(url);
+
+      request.headers.contentType = ContentType.json;
+      request.write(jsonEncode(bodyParameters));
+      final response = await request.close();
+      final json = (await response.jsonDecode());
+      _validateResponse(response, json);
+
+      final result = parser(json);
+      return result;
+    } on SocketException {
+      throw ApiClientException(ApiClientExceptionType.network);
+    } on ApiClientException {
+      rethrow;
+    } catch (e) {
+      throw ApiClientException(ApiClientExceptionType.other);
+    }
+  }
+
+  void _validateResponse(
+      HttpClientResponse response, Map<String, dynamic> json) {
+    if (response.statusCode == 401) {
+      final status = json['status_code'];
+      final code = status is int ? status : 0;
+      if (code == 30) {
+        throw ApiClientException(ApiClientExceptionType.auth);
+      } else {
+        throw ApiClientException(ApiClientExceptionType.other);
+      }
+    }
   }
 }
 
