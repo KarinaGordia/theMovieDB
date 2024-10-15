@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:the_movie_db/domain/entity/popular_movie_list_response.dart';
+
 //karinagordya
 //login_FoR_flutter
 
@@ -18,6 +20,8 @@ class ApiClient {
   static const _host = 'https://api.themoviedb.org/3';
   static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   static const _apiKey = '0170708c03fdae05fbf2c02b9f0119ea';
+
+  static String imageUrl(String path) => _imageUrl + path;
 
   Future<String> auth({
     required String userName,
@@ -92,6 +96,25 @@ class ApiClient {
       parameters,
       parser,
       <String, dynamic>{'api_key': _apiKey},
+    );
+    return result;
+  }
+
+  Future<PopularMovieListResponse> getPopularMovieList(int page, String localization) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieListResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = _get(
+      '/movie/popular',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'language' : localization,
+        'page' : page.toString(),
+      },
     );
     return result;
   }

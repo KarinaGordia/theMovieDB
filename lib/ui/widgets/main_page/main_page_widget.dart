@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/widgets/main_page/main_page_model.dart';
+import 'package:the_movie_db/ui/widgets/movie_list/movie_list_model.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_widget.dart';
 import 'package:the_movie_db/ui/widgets/news/news_widget.dart';
 import 'package:the_movie_db/ui/widgets/tv_show_list/tv_show_list.dart';
@@ -15,7 +16,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedDestination = 0;
+  final movieListModel = MovieListModel();
 
+  void onSelectTab(int index) {
+    if (_selectedDestination == index) return;
+    setState(() {
+      _selectedDestination = index;
+    });
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+    movieListModel.loadMovies();
+  }
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.read<MainPageModel>(context);
@@ -51,11 +66,15 @@ class _MainPageState extends State<MainPage> {
         padding: const EdgeInsets.all(20),
         child: IndexedStack(
           index: _selectedDestination,
-          children: const [
-            NewsWidget(),
-            MovieListWidget(),
-            TWShowListWidget(),
-            Text('People'),
+          children: [
+            const NewsWidget(),
+            NotifierProvider(
+              model: movieListModel,
+              child: const MovieListWidget(),
+            ),
+            const Text('TV Shows'),
+            // TWShowListWidget(),
+            const Text('People'),
           ],
         ),
       ),
@@ -67,12 +86,7 @@ class _MainPageState extends State<MainPage> {
             NavigationDestination(icon: Icon(Icons.live_tv), label: 'TV Shows'),
             NavigationDestination(icon: Icon(Icons.people), label: 'People'),
           ],
-          onDestinationSelected: (int index) {
-            if (_selectedDestination == index) return;
-            setState(() {
-              _selectedDestination = index;
-            });
-          }),
+          onDestinationSelected: (int index) => onSelectTab(index)),
     );
   }
 }
