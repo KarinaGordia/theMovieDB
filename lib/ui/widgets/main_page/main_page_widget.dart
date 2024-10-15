@@ -25,12 +25,12 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-
   @override
-  void initState() {
-    super.initState();
-    movieListModel.loadMovies();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    movieListModel.setupLocalization(context);
   }
+
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.read<MainPageModel>(context);

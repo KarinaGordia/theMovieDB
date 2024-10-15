@@ -3,7 +3,6 @@ import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/domain/entity/movie.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_model.dart';
-import 'package:intl/intl.dart';
 
 class MovieListWidget extends StatelessWidget {
   const MovieListWidget({super.key});
