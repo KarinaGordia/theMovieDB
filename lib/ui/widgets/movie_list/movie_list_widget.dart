@@ -19,6 +19,7 @@ class MovieListWidget extends StatelessWidget {
           itemCount: model.movies.length,
           itemExtent: 141,
           itemBuilder: (BuildContext context, int index) {
+            model.getCurrentMovieByIndex(index);
             final movie = model.movies[index];
             return CardMovie(
               movie: movie,
