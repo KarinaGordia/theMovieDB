@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:the_movie_db/domain/entity/popular_movie_list_response.dart';
+import 'package:the_movie_db/domain/entity/movie_list_response.dart';
 
 //karinagordya
 //login_FoR_flutter
@@ -45,7 +45,7 @@ class ApiClient {
   }
 
   Future<String> _makeToken() async {
-    parser(dynamic json) {
+    String parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final token = jsonMap['request_token'] as String;
       return token;
@@ -66,7 +66,7 @@ class ApiClient {
       'password': password,
       'request_token': requestToken
     };
-    parser(dynamic json) {
+    String parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final token = jsonMap['request_token'] as String;
       return token;
@@ -85,7 +85,7 @@ class ApiClient {
     required String requestToken,
   }) async {
     final parameters = <String, dynamic>{'request_token': requestToken};
-    parser(dynamic json) {
+    String parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final sessionId = jsonMap['session_id'] as String;
       return sessionId;
@@ -100,10 +100,10 @@ class ApiClient {
     return result;
   }
 
-  Future<PopularMovieListResponse> getPopularMovieList(int page, String localization) async {
-    parser(dynamic json) {
+  Future<MovieListResponse> getPopularMovieList(int page, String locale) async {
+    MovieListResponse parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
-      final response = PopularMovieListResponse.fromJson(jsonMap);
+      final response = MovieListResponse.fromJson(jsonMap);
       return response;
     }
 
@@ -112,8 +112,29 @@ class ApiClient {
       parser,
       <String, dynamic>{
         'api_key': _apiKey,
-        'language' : localization,
+        'language' : locale,
         'page' : page.toString(),
+      },
+    );
+    return result;
+  }
+
+  Future<MovieListResponse> getSearchedMovieList(int page, String locale, String query) async {
+    MovieListResponse parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieListResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = _get(
+      '/search/movie',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'query' : query,
+        'language' : locale,
+        'page' : page.toString(),
+        'include_adult' : true.toString(),
       },
     );
     return result;

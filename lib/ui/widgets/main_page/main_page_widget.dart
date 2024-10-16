@@ -28,7 +28,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    movieListModel.setupLocalization(context);
+    movieListModel.setupLocale(context);
   }
 
   @override
