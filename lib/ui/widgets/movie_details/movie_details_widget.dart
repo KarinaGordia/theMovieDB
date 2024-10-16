@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/resources/app_images.dart';
 import 'package:the_movie_db/ui/widgets/elements/circle_progress_bar.dart';
+import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 
 part 'movie_details_main_info_widget.dart';
 
@@ -16,17 +18,22 @@ part 'movie_details_cast_widget.dart';
 
 part 'movie_details_social_widget.dart';
 
-class MoviePage extends StatefulWidget {
-  const MoviePage({super.key, required this.movieId, required this.primaryColor});
+class MovieDetailsWidget extends StatefulWidget {
+  const MovieDetailsWidget({super.key, required this.primaryColor});
 
-  final int movieId;
   final Color primaryColor;
 
   @override
-  State<MoviePage> createState() => _MoviePageState();
+  State<MovieDetailsWidget> createState() => _MovieDetailsWidgetState();
 }
 
-class _MoviePageState extends State<MoviePage> {
+class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    NotifierProvider.read<MovieDetailsModel>(context)?.setupLocale(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +72,10 @@ class _MoviePageState extends State<MoviePage> {
               MovieDetailsMainInfoWidget(
                 primaryColor: widget.primaryColor,
               ),
-              const ColoredBox(color: Colors.white, child: MovieDetailsCastWidget()),
+              const ColoredBox(
+                color: Colors.white,
+                child: MovieDetailsCastWidget(),
+              ),
             ],
           ),
         ),

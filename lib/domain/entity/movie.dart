@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:the_movie_db/domain/entity/movie_date_parser.dart';
 
 part 'movie.g.dart';
 
@@ -13,7 +14,7 @@ class Movie {
   final String overview;
   final double popularity;
   final String? posterPath;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseMovieDateFromString)
   final DateTime? releaseDate;
   final String title;
   final bool video;

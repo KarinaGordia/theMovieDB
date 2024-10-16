@@ -69,7 +69,8 @@ class _MainPageState extends State<MainPage> {
           children: [
             const NewsWidget(),
             NotifierProvider(
-              model: movieListModel,
+              create: () => movieListModel,
+              isManagingModel: false,
               child: const MovieListWidget(),
             ),
             const Text('TV Shows'),

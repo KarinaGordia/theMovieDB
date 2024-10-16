@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:the_movie_db/domain/entity/movie_details_response.dart';
 import 'package:the_movie_db/domain/entity/movie_list_response.dart';
 
 //karinagordya
@@ -135,6 +136,24 @@ class ApiClient {
         'language' : locale,
         'page' : page.toString(),
         'include_adult' : true.toString(),
+      },
+    );
+    return result;
+  }
+
+  Future<MovieDetailsResponse> getMovieDetails(int movieId, String locale) async {
+    MovieDetailsResponse parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieDetailsResponse.fromJson(jsonMap);
+      return response;
+    }
+
+    final result = _get(
+      '/movie/$movieId',
+      parser,
+      <String, dynamic>{
+        'api_key': _apiKey,
+        'language' : locale,
       },
     );
     return result;
