@@ -46,6 +46,8 @@ MovieDetailsResponse _$MovieDetailsResponseFromJson(
           json['release_dates'] as Map<String, dynamic>),
       credits: MovieCreditsResponse.fromJson(
           json['credits'] as Map<String, dynamic>),
+      videos:
+          MovieVideosResponse.fromJson(json['videos'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$MovieDetailsResponseToJson(
@@ -81,6 +83,7 @@ Map<String, dynamic> _$MovieDetailsResponseToJson(
       'vote_count': instance.voteCount,
       'release_dates': instance.releaseInfo.toJson(),
       'credits': instance.credits.toJson(),
+      'videos': instance.videos.toJson(),
     };
 
 Collection _$CollectionFromJson(Map<String, dynamic> json) => Collection(

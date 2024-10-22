@@ -65,8 +65,11 @@ class _CrewWidget extends StatelessWidget {
       child: Wrap(
         runSpacing: 20,
         spacing: 20,
-        children: members.entries.map((entry) =>
-            _CreatorProfileWidget(name: entry.key, occupation: entry.value.join(', '),))
+        children: members.entries
+            .map((entry) => _CreatorProfileWidget(
+                  name: entry.key,
+                  occupation: entry.value.join(', '),
+                ))
             .toList(),
       ),
     );
@@ -122,9 +125,7 @@ class _OverviewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final movieDetails =
-        NotifierProvider
-            .watch<MovieDetailsModel>(context)
-            ?.movieDetails;
+        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
     final tagline = movieDetails?.tagline ?? '';
     final overview = movieDetails?.overview ?? '';
 
@@ -166,9 +167,7 @@ class _TopPosterWidget extends StatelessWidget {
 
   double calculateAspectRatio(BuildContext context) {
     final isPortrait =
-        MediaQuery
-            .of(context)
-            .orientation == Orientation.portrait;
+        MediaQuery.of(context).orientation == Orientation.portrait;
     return isPortrait ? 16 / 9 : 3;
   }
 
@@ -263,7 +262,7 @@ class _UserScoreWidget extends StatelessWidget {
                   backgroundColor: const Color.fromARGB(255, 10, 23, 25),
                   indicatorColor: const Color.fromARGB(255, 37, 203, 103),
                   backgroundIndicatorColor:
-                  const Color.fromARGB(255, 25, 54, 31),
+                      const Color.fromARGB(255, 25, 54, 31),
                   lineWidth: 3,
                   margin: 3,
                 ),
@@ -378,7 +377,7 @@ class _GeneralMovieInfoWidget extends StatelessWidget {
                   '$releaseDate $countryCode, $runtime',
                   style: textStyle,
                 ),
-                PlayTrailerButton(textColor: textColor),
+                _PlayTrailerButton(textColor: textColor),
               ],
             ),
             Text(
@@ -392,8 +391,8 @@ class _GeneralMovieInfoWidget extends StatelessWidget {
   }
 }
 
-class PlayTrailerButton extends StatelessWidget {
-  const PlayTrailerButton({
+class _PlayTrailerButton extends StatelessWidget {
+  const _PlayTrailerButton({
     super.key,
     required this.textColor,
   });
@@ -402,6 +401,12 @@ class PlayTrailerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final movieDetails =
+        NotifierProvider.watch<MovieDetailsModel>(context)?.movieDetails;
+    final videos = movieDetails?.videos.results
+        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
+    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
+    if (trailerKey == null) return const SizedBox.shrink();
     return SizedBox(
       height: 24,
       child: TextButton(
@@ -410,7 +415,9 @@ class PlayTrailerButton extends StatelessWidget {
             const EdgeInsets.symmetric(vertical: 0),
           ),
         ),
-        onPressed: () {},
+        onPressed: () => Navigator.of(context).pushNamed(
+            MainNavigationNames.movieTrailerWidget,
+            arguments: trailerKey),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

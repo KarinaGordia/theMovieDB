@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:the_movie_db/domain/entity/movie_certification_response.dart';
 import 'package:the_movie_db/domain/entity/movie_details_response.dart';
 import 'package:the_movie_db/domain/entity/movie_list_response.dart';
 
@@ -153,31 +152,13 @@ class ApiClient {
       '/movie/$movieId',
       parser,
       <String, dynamic>{
-        'append_to_response' : 'credits,release_dates',
+        'append_to_response' : 'credits,release_dates,videos',
         'api_key': _apiKey,
         'language' : locale,
       },
     );
     return result;
   }
-
-  // Future<MovieReleaseInfoResponse> getMovieReleaseInfo(int movieId) async {
-  //   MovieReleaseInfoResponse parser(dynamic json) {
-  //     final jsonMap = json as Map<String, dynamic>;
-  //     final response = MovieReleaseInfoResponse.fromJson(jsonMap);
-  //     return response;
-  //   }
-  //
-  //   final result = _get(
-  //     '/movie/$movieId/release_dates',
-  //     parser,
-  //     <String, dynamic>{
-  //       'api_key': _apiKey,
-  //       // 'language' : locale,
-  //     },
-  //   );
-  //   return result;
-  // }
 
   Future<T> _get<T>(String path, T Function(dynamic json) parser,
       [Map<String, dynamic>? parameters]) async {

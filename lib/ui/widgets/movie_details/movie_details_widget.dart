@@ -5,6 +5,7 @@ import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/domain/entity/movie_credits_response.dart';
 import 'package:the_movie_db/domain/entity/movie_details_response.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:the_movie_db/ui/widgets/elements/circle_progress_bar.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 

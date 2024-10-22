@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:the_movie_db/domain/entity/movie_certification_response.dart';
 import 'package:the_movie_db/domain/entity/movie_credits_response.dart';
 import 'package:the_movie_db/domain/entity/movie_date_parser.dart';
+import 'package:the_movie_db/domain/entity/movie_videos_response.dart';
 
 part 'movie_details_response.g.dart';
 
@@ -36,35 +37,38 @@ class MovieDetailsResponse {
   @JsonKey(name: 'release_dates')
   final MovieReleaseInfoResponse releaseInfo;
   final MovieCreditsResponse credits;
+  final MovieVideosResponse videos;
 
-  MovieDetailsResponse(
-      {required this.adult,
-      required this.backdropPath,
-      required this.belongsToCollections,
-      required this.budget,
-      required this.genres,
-      required this.homepage,
-      required this.id,
-      required this.imdbId,
-      required this.originalLanguage,
-      required this.originalTitle,
-      required this.overview,
-      required this.popularity,
-      required this.posterPath,
-      required this.productionCompanies,
-      required this.productionCountries,
-      required this.releaseDate,
-      required this.revenue,
-      required this.runtime,
-      required this.spokenLanguages,
-      required this.status,
-      required this.tagline,
-      required this.title,
-      required this.video,
-      required this.voteAverage,
-      required this.voteCount,
-      required this.releaseInfo,
-      required this.credits, });
+  MovieDetailsResponse({
+    required this.adult,
+    required this.backdropPath,
+    required this.belongsToCollections,
+    required this.budget,
+    required this.genres,
+    required this.homepage,
+    required this.id,
+    required this.imdbId,
+    required this.originalLanguage,
+    required this.originalTitle,
+    required this.overview,
+    required this.popularity,
+    required this.posterPath,
+    required this.productionCompanies,
+    required this.productionCountries,
+    required this.releaseDate,
+    required this.revenue,
+    required this.runtime,
+    required this.spokenLanguages,
+    required this.status,
+    required this.tagline,
+    required this.title,
+    required this.video,
+    required this.voteAverage,
+    required this.voteCount,
+    required this.releaseInfo,
+    required this.credits,
+    required this.videos,
+  });
 
   factory MovieDetailsResponse.fromJson(Map<String, dynamic> json) =>
       _$MovieDetailsResponseFromJson(json);
