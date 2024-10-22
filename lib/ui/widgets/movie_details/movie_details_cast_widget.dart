@@ -5,48 +5,34 @@ class MovieDetailsCastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          const Padding(
+            padding: EdgeInsets.only(left: 20.0),
             child: Text(
-              'Cast',
+              'Top Billed Cast',
               style: TextStyle(
                 fontSize: 19.2,
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
-          SizedBox(
-            height: 20,
-          ),
-          SizedBox(
-            height: 244,
-            child: Scrollbar(
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 10,
-                itemExtent: 122,
-                itemBuilder: (BuildContext context, int index) {
-                  return _ActorCard(
-                    name: 'Zhang Ruoyun',
-                    character: 'Fan Xian',
-                    episodeCount: 82,
-                    imagePath: AppImages.atorPhoto,
-                  );
-                },
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
+          const SizedBox(
+            height: 352,
+            child: _ActorsListView(),
           ),
           TextButton(
             onPressed: () {},
-            child: Text(
+            style: ButtonStyle(
+              padding: WidgetStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 20),
+              ),
+            ),
+            child: const Text(
               'Full Cast & Crew',
               style: TextStyle(
                 color: Colors.black,
@@ -54,14 +40,6 @@ class MovieDetailsCastWidget extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all(
-                EdgeInsets.symmetric(horizontal: 20),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
           ),
         ],
       ),
@@ -69,52 +47,68 @@ class MovieDetailsCastWidget extends StatelessWidget {
   }
 }
 
-class _ActorCard extends StatelessWidget {
-  const _ActorCard(
-      {super.key,
-      required this.name,
-      required this.character,
-      required this.episodeCount,
-      required this.imagePath});
-
-  final String imagePath;
-  final String name;
-  final String character;
-  final int episodeCount;
+class _ActorsListView extends StatelessWidget {
+  const _ActorsListView({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    var cast = NotifierProvider.watch<MovieDetailsModel>(context)
+        ?.movieDetails
+        ?.credits
+        .cast;
+    if (cast == null || cast.isEmpty) return const SizedBox.shrink();
+    cast = cast.sublist(0,9);
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      scrollDirection: Axis.horizontal,
+      itemCount: cast.length,
+      itemExtent: 140,
+      itemBuilder: (BuildContext context, int index) {
+        final castMember = cast?[index];
+        return _ActorCard(castMember: castMember!,
+        );
+      },
+    );
+  }
+}
+
+class _ActorCard extends StatelessWidget {
+  const _ActorCard(
+      {super.key,
+      required this.castMember});
+
+  final CastMember castMember;
+
+  @override
+  Widget build(BuildContext context) {
+    final poster = castMember.profilePath;
     return Card(
       clipBehavior: Clip.hardEdge,
       color: Colors.white,
       child: Column(
         children: [
-          Image(
-            image: AssetImage(imagePath),
-          ),
+          if(poster != null)
+            Image.network(ApiClient.imageUrl(poster)),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  name,
-                  style: TextStyle(
+                  castMember.name,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
-                  character,
-                  style: TextStyle(
+                  castMember.character,
+                  maxLines: 3,
+                  style: const TextStyle(
                     fontSize: 14.4,
-                  ),
-                ),
-                Text(
-                  '$episodeCount Episodes',
-                  style: TextStyle(
-                    color: Color.fromRGBO(0, 0, 0, 0.5),
-                    fontSize: 14.4,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],

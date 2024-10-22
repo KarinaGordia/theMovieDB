@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CircleProgressBarWidget extends StatelessWidget {
-  CircleProgressBarWidget(
+  const CircleProgressBarWidget(
       {super.key,
-      this.margin,
+      this.margin = 0,
       this.showPercentValue = true,
       required this.percent,
       required this.backgroundColor,
@@ -18,16 +18,19 @@ class CircleProgressBarWidget extends StatelessWidget {
   final Color indicatorColor;
   final Color backgroundIndicatorColor;
   final double lineWidth;
-  double? margin;
+  final double margin;
   final bool showPercentValue;
 
+  double calculateFontSize(double lineWidth,double margin,) {
+    return (lineWidth / 2 + margin) * 3;
+  }
   @override
   Widget build(BuildContext context) {
     return Stack(
       fit: StackFit.expand,
       children: [
         CustomPaint(
-          painter: theMovieDBRatingPainter(
+          painter: MovieRatingPainter(
             percent: percent,
             backgroundColor: backgroundColor,
             indicatorColor: indicatorColor,
@@ -44,7 +47,7 @@ class CircleProgressBarWidget extends StatelessWidget {
                 '$percent',
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: (lineWidth / 2 + (margin ??= 0)) * 3,
+                    fontSize: calculateFontSize(lineWidth, margin),
                     fontWeight: FontWeight.w700),
               ),
             ),
@@ -54,16 +57,16 @@ class CircleProgressBarWidget extends StatelessWidget {
   }
 }
 
-class theMovieDBRatingPainter extends CustomPainter {
+class MovieRatingPainter extends CustomPainter {
   final int percent;
   final Color backgroundColor;
   final Color indicatorColor;
   final Color backgroundIndicatorColor;
   final double lineWidth;
-  double? margin = 0;
+  final double margin;
 
-  theMovieDBRatingPainter(
-      {this.margin,
+  const MovieRatingPainter(
+      {this.margin = 0,
       required this.percent,
       required this.backgroundColor,
       required this.indicatorColor,
@@ -106,7 +109,7 @@ class theMovieDBRatingPainter extends CustomPainter {
   }
 
   Rect calculateIndicatorRect(Size size) {
-    final offset = lineWidth / 2 + (margin ??= 0);
+    final offset = lineWidth / 2 + margin;
     final indicatorRect = Offset(offset, offset) &
         Size(size.width - offset * 2, size.height - offset * 2);
     return indicatorRect;

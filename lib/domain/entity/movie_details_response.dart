@@ -1,5 +1,8 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:the_movie_db/domain/entity/movie_certification_response.dart';
+import 'package:the_movie_db/domain/entity/movie_credits_response.dart';
 import 'package:the_movie_db/domain/entity/movie_date_parser.dart';
+
 part 'movie_details_response.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -22,7 +25,7 @@ class MovieDetailsResponse {
   @JsonKey(fromJson: parseMovieDateFromString)
   final DateTime? releaseDate;
   final int revenue;
-  final int? runTime;
+  final int? runtime;
   final List<SpokenLanguage> spokenLanguages;
   final String status;
   final String? tagline;
@@ -30,6 +33,9 @@ class MovieDetailsResponse {
   final bool video;
   final double voteAverage;
   final int voteCount;
+  @JsonKey(name: 'release_dates')
+  final MovieReleaseInfoResponse releaseInfo;
+  final MovieCreditsResponse credits;
 
   MovieDetailsResponse(
       {required this.adult,
@@ -49,19 +55,40 @@ class MovieDetailsResponse {
       required this.productionCountries,
       required this.releaseDate,
       required this.revenue,
-      required this.runTime,
+      required this.runtime,
       required this.spokenLanguages,
       required this.status,
       required this.tagline,
       required this.title,
       required this.video,
       required this.voteAverage,
-      required this.voteCount});
+      required this.voteCount,
+      required this.releaseInfo,
+      required this.credits, });
 
   factory MovieDetailsResponse.fromJson(Map<String, dynamic> json) =>
       _$MovieDetailsResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$MovieDetailsResponseToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class Collection {
+  final int id;
+  final String name;
+  final String? posterPath;
+  final String? backdropPath;
+
+  Collection(
+      {required this.id,
+      required this.name,
+      required this.posterPath,
+      required this.backdropPath});
+
+  factory Collection.fromJson(Map<String, dynamic> json) =>
+      _$CollectionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CollectionToJson(this);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

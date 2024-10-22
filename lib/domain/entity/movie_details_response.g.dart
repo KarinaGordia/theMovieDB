@@ -32,7 +32,7 @@ MovieDetailsResponse _$MovieDetailsResponseFromJson(
           .toList(),
       releaseDate: parseMovieDateFromString(json['release_date'] as String?),
       revenue: (json['revenue'] as num).toInt(),
-      runTime: (json['run_time'] as num?)?.toInt(),
+      runtime: (json['runtime'] as num?)?.toInt(),
       spokenLanguages: (json['spoken_languages'] as List<dynamic>)
           .map((e) => SpokenLanguage.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -42,6 +42,10 @@ MovieDetailsResponse _$MovieDetailsResponseFromJson(
       video: json['video'] as bool,
       voteAverage: (json['vote_average'] as num).toDouble(),
       voteCount: (json['vote_count'] as num).toInt(),
+      releaseInfo: MovieReleaseInfoResponse.fromJson(
+          json['release_dates'] as Map<String, dynamic>),
+      credits: MovieCreditsResponse.fromJson(
+          json['credits'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$MovieDetailsResponseToJson(
@@ -66,7 +70,7 @@ Map<String, dynamic> _$MovieDetailsResponseToJson(
           instance.productionCountries.map((e) => e.toJson()).toList(),
       'release_date': instance.releaseDate?.toIso8601String(),
       'revenue': instance.revenue,
-      'run_time': instance.runTime,
+      'runtime': instance.runtime,
       'spoken_languages':
           instance.spokenLanguages.map((e) => e.toJson()).toList(),
       'status': instance.status,
@@ -75,6 +79,23 @@ Map<String, dynamic> _$MovieDetailsResponseToJson(
       'video': instance.video,
       'vote_average': instance.voteAverage,
       'vote_count': instance.voteCount,
+      'release_dates': instance.releaseInfo.toJson(),
+      'credits': instance.credits.toJson(),
+    };
+
+Collection _$CollectionFromJson(Map<String, dynamic> json) => Collection(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+      posterPath: json['poster_path'] as String?,
+      backdropPath: json['backdrop_path'] as String?,
+    );
+
+Map<String, dynamic> _$CollectionToJson(Collection instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'poster_path': instance.posterPath,
+      'backdrop_path': instance.backdropPath,
     };
 
 SpokenLanguage _$SpokenLanguageFromJson(Map<String, dynamic> json) =>

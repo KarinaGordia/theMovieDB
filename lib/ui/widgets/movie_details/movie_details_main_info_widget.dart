@@ -28,136 +28,47 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
         const _TopPosterWidget(),
         _MovieNameWidget(
           textColor: textColor,
-          name: 'Spider-Man: Far From Home',
-          releaseYear: 2019,
         ),
         _UserScoreWidget(
-          score: 72,
           textColor: textColor,
         ),
         _GeneralMovieInfoWidget(
           textColor: textColor,
-          filmRating: '12A',
-          runtime: '1h 55m',
-          releaseDate: '29/03/2024 (GB)',
-          genres: const [
-            'Science Fiction',
-            'Action',
-            'Adventure',
-          ],
         ),
         Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _TagLineWidget(secondaryTextColor: secondaryTextColor),
-              _OverviewWidget(textColor: textColor),
-              _DescriptionTextWidget(textColor: textColor),
-              Column(
-                children: [
-                  _CreatorProfilesRow(
-                    firstCreatorProfile: _CreatorProfileWidget(
-                      name: 'Adam Wingard',
-                      occupation: 'Director, Story',
-                      textColor: textColor,
-                    ),
-                    secondCreatorProfile: _CreatorProfileWidget(
-                      name: 'Terry Rossio',
-                      occupation: 'Screenplay, Story',
-                      textColor: textColor,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  _CreatorProfilesRow(
-                    firstCreatorProfile: _CreatorProfileWidget(
-                      name: 'Simon Barrett',
-                      occupation: 'Screenplay, Story',
-                      textColor: textColor,
-                    ),
-                    secondCreatorProfile: _CreatorProfileWidget(
-                      name: 'Jeremy Slater',
-                      occupation: 'Screenplay',
-                      textColor: textColor,
-                    ),
-                  ),
-                ],
-              ),
+              _OverviewWidget(
+                  textColor: textColor, secondaryTextColor: secondaryTextColor),
+              const _CrewWidget(),
             ],
           ),
         ),
-
-        // Row(
-        //   children: [
-        //     TextButton(onPressed: onPressed, child: child),
-        //     Divider(),
-        //     TextButton(onPressed: onPressed, child: child),
-        //   ],
-        // ),
-        // Column(
-        //   children: [
-        //     Row(
-        //       children: [
-        //         Container(),
-        //         Text(data),
-        //         Divider(),
-        //         Text(data),
-        //         TextButton(onPressed: onPressed, child: child),
-        //       ],
-        //     ),
-        //     Text(data),
-        //   ],
-        // ),
-        // Column(
-        //   children: [
-        //     Text(data),
-        //     Text(data),
-        //     Table(
-        //       children: [
-        //         TableRow(
-        //           children: [
-        //             CreatorProfileWidget(),
-        //             CreatorProfileWidget(),
-        //           ],
-        //         )
-        //       ],
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
 }
 
-class _CreatorProfilesRow extends StatelessWidget {
-  const _CreatorProfilesRow({
-    required this.firstCreatorProfile,
-    required this.secondCreatorProfile,
-  });
-
-  final _CreatorProfileWidget firstCreatorProfile;
-  final _CreatorProfileWidget secondCreatorProfile;
+class _CrewWidget extends StatelessWidget {
+  const _CrewWidget();
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: firstCreatorProfile,
-          ),
-        ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: secondCreatorProfile,
-          ),
-        ),
-      ],
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final members = model?.getMainCrewMembers();
+    if (members == null) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Wrap(
+        runSpacing: 20,
+        spacing: 20,
+        children: members.entries.map((entry) =>
+            _CreatorProfileWidget(name: entry.key, occupation: entry.value.join(', '),))
+            .toList(),
+      ),
     );
   }
 }
@@ -166,74 +77,34 @@ class _CreatorProfileWidget extends StatelessWidget {
   const _CreatorProfileWidget({
     required this.name,
     required this.occupation,
-    required this.textColor,
   });
 
   final String name;
   final String occupation;
-  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          name,
-          style: TextStyle(
-            color: textColor,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
+    return SizedBox(
+      width: 170,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
-        Text(
-          occupation,
-          style: TextStyle(
-            color: textColor,
-            fontSize: 14.4,
+          Text(
+            occupation,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.4,
+            ),
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TagLineWidget extends StatelessWidget {
-  const _TagLineWidget({
-    required this.secondaryTextColor,
-  });
-
-  final Color secondaryTextColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      'Rise together or fall alone.',
-      style: TextStyle(
-          color: secondaryTextColor,
-          fontSize: 17.6,
-          fontStyle: FontStyle.italic),
-    );
-  }
-}
-
-class _DescriptionTextWidget extends StatelessWidget {
-  const _DescriptionTextWidget({
-    required this.textColor,
-  });
-
-  final Color textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 30),
-      child: Text(
-        'Following their explosive showdown, Godzilla and Kong must reunite against a colossal undiscovered threat hidden within our world, challenging their very existence – and our own.',
-        style: TextStyle(
-          color: textColor,
-          fontSize: 16,
-        ),
+        ],
       ),
     );
   }
@@ -242,19 +113,50 @@ class _DescriptionTextWidget extends StatelessWidget {
 class _OverviewWidget extends StatelessWidget {
   const _OverviewWidget({
     required this.textColor,
+    required this.secondaryTextColor,
   });
 
   final Color textColor;
+  final Color secondaryTextColor;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, bottom: 10),
-      child: Text(
-        'Overview',
-        style: TextStyle(
-            color: textColor, fontSize: 20.8, fontWeight: FontWeight.w600),
-      ),
+    final movieDetails =
+        NotifierProvider
+            .watch<MovieDetailsModel>(context)
+            ?.movieDetails;
+    final tagline = movieDetails?.tagline ?? '';
+    final overview = movieDetails?.overview ?? '';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tagline,
+          style: TextStyle(
+              color: secondaryTextColor,
+              fontSize: 17.6,
+              fontStyle: FontStyle.italic),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            'Overview',
+            style: TextStyle(
+                color: textColor, fontSize: 20.8, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Text(
+            overview,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -262,35 +164,51 @@ class _OverviewWidget extends StatelessWidget {
 class _TopPosterWidget extends StatelessWidget {
   const _TopPosterWidget();
 
+  double calculateAspectRatio(BuildContext context) {
+    final isPortrait =
+        MediaQuery
+            .of(context)
+            .orientation == Orientation.portrait;
+    return isPortrait ? 16 / 9 : 3;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Stack(
-      children: [
-        Image(
-          image: AssetImage(AppImages.spidermanBackground),
-        ),
-        Positioned(
-            top: 20,
-            bottom: 20,
-            left: 20,
-            child: Image(image: AssetImage(AppImages.spidermanPoster))),
-      ],
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final backdropPath = model?.movieDetails?.backdropPath;
+    final posterPath = model?.movieDetails?.posterPath;
+    return AspectRatio(
+      aspectRatio: calculateAspectRatio(context),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          backdropPath != null
+              ? Image.network(ApiClient.imageUrl(backdropPath))
+              : const SizedBox.shrink(),
+          if (posterPath != null)
+            Positioned(
+              top: 20,
+              bottom: 20,
+              left: 20,
+              child: Image.network(
+                ApiClient.imageUrl(posterPath),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
 
 class _MovieNameWidget extends StatelessWidget {
-  const _MovieNameWidget(
-      {required this.name,
-      required this.releaseYear,
-      required this.textColor});
+  const _MovieNameWidget({required this.textColor});
 
-  final String name;
-  final int releaseYear;
   final Color textColor;
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final releaseYear = model?.movieDetails?.releaseDate?.year;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
       child: RichText(
@@ -298,12 +216,12 @@ class _MovieNameWidget extends StatelessWidget {
         text: TextSpan(
           children: [
             TextSpan(
-              text: name,
+              text: model?.movieDetails?.title,
               style: TextStyle(
                   color: textColor, fontWeight: FontWeight.w600, fontSize: 20),
             ),
             TextSpan(
-              text: ' ($releaseYear)',
+              text: releaseYear != null ? ' ($releaseYear)' : '',
               style: const TextStyle(
                   color: Color.fromRGBO(239, 239, 239, 1),
                   fontWeight: FontWeight.w400,
@@ -317,13 +235,14 @@ class _MovieNameWidget extends StatelessWidget {
 }
 
 class _UserScoreWidget extends StatelessWidget {
-  const _UserScoreWidget({required this.textColor, required this.score});
+  const _UserScoreWidget({required this.textColor});
 
   final Color textColor;
-  final int score;
 
   @override
   Widget build(BuildContext context) {
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    final score = ((model?.movieDetails?.voteAverage ?? 0) * 10).toInt();
     final textStyle = TextStyle(
       color: textColor,
       fontWeight: FontWeight.w700,
@@ -343,12 +262,15 @@ class _UserScoreWidget extends StatelessWidget {
                   percent: score,
                   backgroundColor: const Color.fromARGB(255, 10, 23, 25),
                   indicatorColor: const Color.fromARGB(255, 37, 203, 103),
-                  backgroundIndicatorColor: const Color.fromARGB(255, 25, 54, 31),
+                  backgroundIndicatorColor:
+                  const Color.fromARGB(255, 25, 54, 31),
                   lineWidth: 3,
                   margin: 3,
                 ),
               ),
-              const SizedBox(width: 10,),
+              const SizedBox(
+                width: 10,
+              ),
               Text('User Score', style: textStyle),
             ],
           ),
@@ -371,23 +293,51 @@ class _UserScoreWidget extends StatelessWidget {
 }
 
 class _GeneralMovieInfoWidget extends StatelessWidget {
-  const _GeneralMovieInfoWidget(
-      {required this.filmRating,
-      this.releaseDate,
-      this.runtime,
-      required this.genres,
-      required this.textColor});
+  const _GeneralMovieInfoWidget({required this.textColor});
 
-  final String filmRating;
-  final String? releaseDate;
-  final String? runtime;
-  final List<String> genres;
   final Color textColor;
+
+  String _movieRuntimeInHours(int? runtime) {
+    if (runtime == null) return 'N/A';
+    final duration = Duration(minutes: runtime);
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes.remainder(60);
+
+    if (hours == 0) return '${minutes}m';
+    if (minutes == 0) return '${hours}h';
+    return '${hours}h ${minutes}m';
+  }
+
+  String _getGenresString(List<Genre>? genres) {
+    if (genres != null && genres.isNotEmpty) {
+      var genreNames = <String>[];
+      for (var genre in genres) {
+        genreNames.add(genre.name);
+      }
+
+      return genreNames.join(', ');
+    }
+
+    return '';
+  }
 
   @override
   Widget build(BuildContext context) {
-    var textStyle =
-        TextStyle(color: textColor, fontWeight: FontWeight.w400, fontSize: 16);
+    final model = NotifierProvider.watch<MovieDetailsModel>(context);
+    if (model == null) return const SizedBox.shrink();
+
+    final releaseInfo = model.movieReleaseInfo?.releaseDates.first;
+    final certification = releaseInfo?.certification ?? '';
+    final releaseDate = model.stringFromDate(releaseInfo?.releaseDate);
+    final countryCode = '(${model.movieReleaseInfo?.iso ?? ''})';
+    final runtime = _movieRuntimeInHours(model.movieDetails?.runtime);
+    final genres = _getGenresString(model.movieDetails?.genres);
+
+    var textStyle = TextStyle(
+      color: textColor,
+      fontWeight: FontWeight.w400,
+      fontSize: 16,
+    );
     const borderStyle = BorderSide(
       color: Color.fromRGBO(0, 0, 0, 0.2),
     );
@@ -408,49 +358,70 @@ class _GeneralMovieInfoWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  '$filmRating, $releaseDate, $runtime',
-                  style: textStyle,
-                ),
-                SizedBox(
-                  height: 24,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      padding: WidgetStateProperty.all(
-                        const EdgeInsets.symmetric(vertical: 0),
+                if (certification != '')
+                  Container(
+                    padding: const EdgeInsets.only(
+                        top: 1, bottom: 2.4, left: 4, right: 4),
+                    margin: const EdgeInsets.only(right: 7),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: const Color.fromRGBO(168, 160, 160, 1),
                       ),
+                      borderRadius: BorderRadius.circular(2),
                     ),
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.play_arrow_rounded,
-                          color: textColor,
-                        ),
-                        Text(
-                          'Play trailer',
-                          style: TextStyle(
-                              color: textColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16),
-                        ),
-                      ],
+                    child: Text(
+                      certification,
+                      style: textStyle,
                     ),
                   ),
+                Text(
+                  '$releaseDate $countryCode, $runtime',
+                  style: textStyle,
                 ),
+                PlayTrailerButton(textColor: textColor),
               ],
             ),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                children: genres
-                    .map((genre) => TextSpan(
-                          text: '$genre, ',
-                          style: textStyle,
-                        ))
-                    .toList(),
-              ),
+            Text(
+              genres,
+              style: textStyle,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PlayTrailerButton extends StatelessWidget {
+  const PlayTrailerButton({
+    super.key,
+    required this.textColor,
+  });
+
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 24,
+      child: TextButton(
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all(
+            const EdgeInsets.symmetric(vertical: 0),
+          ),
+        ),
+        onPressed: () {},
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.play_arrow_rounded,
+              color: textColor,
+            ),
+            Text(
+              'Play trailer',
+              style: TextStyle(
+                  color: textColor, fontWeight: FontWeight.w600, fontSize: 16),
             ),
           ],
         ),
