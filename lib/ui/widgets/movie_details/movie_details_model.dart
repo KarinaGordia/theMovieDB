@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/api_client/api_client.dart';
+import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 import 'package:the_movie_db/domain/entity/movie_certification_response.dart';
-import 'package:the_movie_db/domain/entity/movie_credits_response.dart';
 import 'package:the_movie_db/domain/entity/movie_details_response.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
+  final _sessionDataProvider = SessionDataProvider();
   final _apiClient = ApiClient();
 
   final int movieId;
   MovieDetailsResponse? _movieDetails;
+  bool _isFavorite = false;
   CountryReleaseInfo? _localeReleaseInfo;
   String _locale = '';
   String _countryCode = '';
@@ -18,6 +20,8 @@ class MovieDetailsModel extends ChangeNotifier {
   MovieDetailsResponse? get movieDetails => _movieDetails;
 
   CountryReleaseInfo? get movieReleaseInfo => _localeReleaseInfo;
+
+  bool get isFavorite => _isFavorite;
   final mainCrewJobs = <String>[
     'Director',
     'Screenplay',
@@ -47,7 +51,24 @@ class MovieDetailsModel extends ChangeNotifier {
 
   Future<void> loadMovieDetails() async {
     _movieDetails = await _apiClient.getMovieDetails(movieId, _locale);
+    final sessionId = await _sessionDataProvider.getSessionId();
+    if (sessionId != null) {
+      _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
+    }
+
     notifyListeners();
+  }
+
+  Future<void> addToFavorite() async {
+    final sessionId = await _sessionDataProvider.getSessionId();
+    final accountId = await _sessionDataProvider.getAccountId();
+    if (sessionId == null || accountId == null) return;
+
+    _isFavorite = !_isFavorite;
+    notifyListeners();
+
+    await _apiClient.markAsFavorite(
+        accountId, sessionId, MediaType.movie, movieId, _isFavorite);
   }
 
   void getLocaleMovieReleaseInfo() {
@@ -64,16 +85,16 @@ class MovieDetailsModel extends ChangeNotifier {
     }
   }
 
-   Map<String, List<String>> getMainCrewMembers() {
+  Map<String, List<String>> getMainCrewMembers() {
     final crew = _movieDetails?.credits.crew;
     final members = <String, List<String>>{};
 
-    if(crew != null) {
-      for(var job in mainCrewJobs) {
-        for(var member in crew) {
-          if(member.job == job) {
+    if (crew != null) {
+      for (var job in mainCrewJobs) {
+        for (var member in crew) {
+          if (member.job == job) {
             final name = member.name;
-            if(!members.containsKey(name)) {
+            if (!members.containsKey(name)) {
               members[name] = <String>[];
             }
             members[name]?.add(member.job);

@@ -193,6 +193,21 @@ class _TopPosterWidget extends StatelessWidget {
                 ApiClient.imageUrl(posterPath),
               ),
             ),
+          Positioned(
+            right: 10,
+            top: 10,
+            child: IconButton(
+              onPressed: () => model?.addToFavorite(),
+              icon: Icon(model?.isFavorite == true
+                  ? Icons.favorite
+                  : Icons.favorite_outline_outlined),
+              color: Colors.white,
+              style: const ButtonStyle(
+                  fixedSize: WidgetStatePropertyAll(Size(50, 50)),
+                  backgroundColor:
+                      WidgetStatePropertyAll(Color.fromRGBO(10, 31, 52, 1))),
+            ),
+          ),
         ],
       ),
     );
