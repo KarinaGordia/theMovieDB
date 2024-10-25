@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:the_movie_db/ui/widgets/app/my_app_model.dart';
 import 'package:the_movie_db/ui/widgets/main_page/main_page_model.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_model.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_widget.dart';
@@ -33,7 +34,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<MainPageModel>(context);
+    final appModel = Provider.read<MyAppModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -47,17 +48,10 @@ class _MainPageState extends State<MainPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () => SessionDataProvider().setSessionId(null),
+            onPressed: () => appModel?.resetSession(context),
             icon: const Icon(
               Icons.logout_outlined,
             ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.search,
-            ),
-            color: const Color.fromRGBO(1, 180, 228, 1),
           ),
         ],
         backgroundColor: const Color.fromRGBO(3, 37, 65, 1.0),
