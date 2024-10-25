@@ -6,6 +6,7 @@ import 'package:the_movie_db/domain/entity/movie_credits_response.dart';
 import 'package:the_movie_db/domain/entity/movie_details_response.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
+import 'package:the_movie_db/ui/widgets/app/my_app_model.dart';
 import 'package:the_movie_db/ui/widgets/elements/circle_progress_bar.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 
@@ -32,6 +33,15 @@ class MovieDetailsWidget extends StatefulWidget {
 
 class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   @override
+  void initState() {
+    super.initState();
+    final model = NotifierProvider.read<MovieDetailsModel>(context);
+    final appModel= Provider.read<MyAppModel>(context);
+
+    model?.onSessionExpired = () => appModel?.resetSession(context);
+  }
+
+  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     NotifierProvider.read<MovieDetailsModel>(context)?.setupLocale(context);
@@ -44,14 +54,6 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
         title: const Text(
           'The Movie DB',
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.person,
-            ),
-          ),
-        ],
         backgroundColor: const Color.fromRGBO(3, 37, 65, 1.0),
       ),
       body: ColoredBox(

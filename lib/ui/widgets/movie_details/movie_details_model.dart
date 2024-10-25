@@ -16,6 +16,7 @@ class MovieDetailsModel extends ChangeNotifier {
   String _locale = '';
   String _countryCode = '';
   late DateFormat _dateFormat;
+  Future<void>? Function()? onSessionExpired;
 
   MovieDetailsResponse? get movieDetails => _movieDetails;
 
@@ -50,13 +51,17 @@ class MovieDetailsModel extends ChangeNotifier {
   }
 
   Future<void> loadMovieDetails() async {
-    _movieDetails = await _apiClient.getMovieDetails(movieId, _locale);
-    final sessionId = await _sessionDataProvider.getSessionId();
-    if (sessionId != null) {
-      _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
-    }
+    try {
+      _movieDetails = await _apiClient.getMovieDetails(movieId, _locale);
+      final sessionId = await _sessionDataProvider.getSessionId();
+      if (sessionId != null) {
+        _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
+      }
 
-    notifyListeners();
+      notifyListeners();
+    } on ApiClientException catch (e) {
+      _handleApiClientException(e);
+    }
   }
 
   Future<void> addToFavorite() async {
@@ -67,8 +72,12 @@ class MovieDetailsModel extends ChangeNotifier {
     _isFavorite = !_isFavorite;
     notifyListeners();
 
-    await _apiClient.markAsFavorite(
-        accountId, sessionId, MediaType.movie, movieId, _isFavorite);
+    try {
+      await _apiClient.markAsFavorite(
+          accountId, sessionId, MediaType.movie, movieId, _isFavorite);
+    } on ApiClientException catch (e) {
+      _handleApiClientException(e);
+    }
   }
 
   void getLocaleMovieReleaseInfo() {
@@ -104,5 +113,15 @@ class MovieDetailsModel extends ChangeNotifier {
     }
 
     return members;
+  }
+
+  void _handleApiClientException(ApiClientException exception) {
+    switch (exception.type) {
+      case ApiClientExceptionType.sessionExpired:
+        onSessionExpired?.call();
+        break;
+      default:
+        print(exception);
+    }
   }
 }

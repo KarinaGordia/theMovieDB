@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:the_movie_db/ui/widgets/app/my_app_model.dart';
 import 'package:the_movie_db/ui/theme/theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.model});
+  const MyApp({super.key});
 
-  final MyAppModel model;
   static final mainNavigation = MainNavigation();
 
   @override
   Widget build(BuildContext context) {
+    final model = Provider.read<MyAppModel>(context);
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -67,7 +68,7 @@ class MyApp extends StatelessWidget {
         Locale('ru', 'RU'),
       ],
       routes: mainNavigation.routes,
-      initialRoute: mainNavigation.initialRoute(model.isAuth),
+      initialRoute: mainNavigation.initialRoute(model?.isAuth == true),
       onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }

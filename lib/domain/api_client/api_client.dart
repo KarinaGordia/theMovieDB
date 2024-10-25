@@ -7,7 +7,7 @@ import 'package:the_movie_db/domain/entity/movie_list_response.dart';
 //karinagordya
 //login_FoR_flutter
 
-enum ApiClientExceptionType { network, auth, other }
+enum ApiClientExceptionType { network, auth, other, sessionExpired }
 
 enum MediaType { movie, tv }
 
@@ -226,7 +226,7 @@ class ApiClient {
       return result;
     }
 
-    _post(
+    await _post(
       '/account/$accountId/favorite',
       parameters,
       parser,
@@ -297,6 +297,8 @@ class ApiClient {
       final code = status is int ? status : 0;
       if (code == 30) {
         throw ApiClientException(ApiClientExceptionType.auth);
+      } else if(code == 3) {
+        throw ApiClientException(ApiClientExceptionType.sessionExpired);
       } else {
         throw ApiClientException(ApiClientExceptionType.other);
       }

@@ -46,6 +46,8 @@ class AuthModel extends ChangeNotifier {
           _errorMessage = 'Incorrect username or password';
         case ApiClientExceptionType.other:
           _errorMessage = 'An error has occurred. Please try again later.';
+        default:
+          print(e);
       }
     } catch (e) {
       _errorMessage = 'An error has occurred. Please try again later.';
