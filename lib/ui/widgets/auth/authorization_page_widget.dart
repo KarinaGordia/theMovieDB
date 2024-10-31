@@ -18,27 +18,6 @@ class _AuthorizationPageState extends State<AuthorizationPage> {
         title: const Text(
           'The Movie DB',
         ),
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.menu,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.person,
-            ),
-          ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.search,
-            ),
-            color: const Color.fromRGBO(1, 180, 228, 1),
-          ),
-        ],
         backgroundColor: const Color.fromRGBO(3, 37, 65, 1.0),
       ),
       body: const SafeArea(

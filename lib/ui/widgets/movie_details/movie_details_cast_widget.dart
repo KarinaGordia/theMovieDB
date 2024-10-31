@@ -5,7 +5,6 @@ class MovieDetailsCastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
@@ -21,10 +20,7 @@ class MovieDetailsCastWidget extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(
-            height: 352,
-            child: _ActorsListView(),
-          ),
+          const _ActorsListView(),
           TextButton(
             onPressed: () {},
             style: ButtonStyle(
@@ -47,10 +43,53 @@ class MovieDetailsCastWidget extends StatelessWidget {
   }
 }
 
+const double posterHeight = 175;
+const double cardWidth = 150;
+const double hiddenCardPadding = 8;
+const double textPadding = 10.0 * 2;
+const double textHeight = 1.45;
+const double additionalHeight = posterHeight + hiddenCardPadding + textPadding;
+const double textWidth = cardWidth - textPadding - hiddenCardPadding;
+const nameTextStyle = TextStyle(
+  fontSize: 16,
+  fontFamily: 'Roboto',
+  height: 1.45,
+  fontWeight: FontWeight.w700,
+  color: Colors.black,
+);
+const characterTextStyle = TextStyle(
+  height: 1.45,
+  fontFamily: 'Roboto',
+  fontSize: 14.4,
+  fontWeight: FontWeight.w400,
+  color: Colors.black,
+);
+
 class _ActorsListView extends StatelessWidget {
-  const _ActorsListView({
-    super.key,
-  });
+  const _ActorsListView();
+
+  double _calculateTextHeight(
+      BuildContext context, String text, TextStyle style, double stringWidth) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+    )..layout(maxWidth: stringWidth);
+    return textPainter.size.height;
+  }
+
+  double _calculateCardHeight(
+      BuildContext context, List<CastMember> members, double stringWidth, double additionalHeight) {
+    final maxNameHeight = members
+        .map((member) =>
+            _calculateTextHeight(
+                context, member.name, nameTextStyle, stringWidth) +
+            _calculateTextHeight(
+                context, member.character, characterTextStyle, stringWidth))
+        .reduce((a, b) => a > b ? a : b);
+
+    final height = additionalHeight + maxNameHeight;
+    return height;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,63 +98,84 @@ class _ActorsListView extends StatelessWidget {
         ?.credits
         .cast;
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
-    cast = cast.sublist(0,9);
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 20),
-      scrollDirection: Axis.horizontal,
-      itemCount: cast.length,
-      itemExtent: 140,
-      itemBuilder: (BuildContext context, int index) {
-        final castMember = cast?[index];
-        return _ActorCard(castMember: castMember!,
-        );
-      },
+    if (cast.length > 9) {
+      cast = cast.sublist(0, 9);
+    }
+
+    final cardHeight = _calculateCardHeight(context, cast, textWidth, additionalHeight);
+
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: cast
+              .map((member) => _ActorCard(
+                    castMember: member,
+                    height: cardHeight,
+                    width: cardWidth,
+                  ))
+              .toList(),
+        ),
+      ),
     );
   }
 }
 
 class _ActorCard extends StatelessWidget {
-  const _ActorCard(
-      {super.key,
-      required this.castMember});
+  const _ActorCard({
+    required this.castMember,
+    required this.height,
+    required this.width,
+  });
 
   final CastMember castMember;
+  final double height;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     final poster = castMember.profilePath;
-    return Card(
-      clipBehavior: Clip.hardEdge,
-      color: Colors.white,
-      child: Column(
-        children: [
-          if(poster != null)
-            Image.network(ApiClient.imageUrl(poster)),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  castMember.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
+    return ConstrainedBox(
+      constraints: const BoxConstraints().tighten(width: width, height: height),
+      child: Card(
+        clipBehavior: Clip.hardEdge,
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            poster != null
+                ? Image.network(
+                    ApiClient.imageUrl(poster),
+                    height: posterHeight,
+                    width: width,
+                    fit: BoxFit.cover,
+                  )
+                : Container(
+                    height: posterHeight,
+                    alignment: Alignment.center,
+                    child: const Text(
+                      '?',
+                      style: TextStyle(fontSize: 20),
+                    ),
                   ),
-                ),
-                Text(
-                  castMember.character,
-                  maxLines: 3,
-                  style: const TextStyle(
-                    fontSize: 14.4,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CustomPaint(
+                painter: CustomTextPainter(
+                    labelText: castMember.name,
+                    subText: castMember.character,
+                    labelTextStyle: nameTextStyle,
+                    subTextStyle: characterTextStyle,
+                    stringWidth: textWidth,),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
+
