@@ -65,7 +65,7 @@ class CircleProgressBarWidget extends StatelessWidget {
             padding: const EdgeInsets.all(10),
             child: Center(
               child: Text(
-                percent == 0 ? 'NR' : '$percent',
+                '$percent',
                 style: TextStyle(
                     color: const Color.fromRGBO(255, 255, 255, 1),
                     fontSize: calculateFontSize(lineWidth, margin),

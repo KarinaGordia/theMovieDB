@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           centerTitle: true,
-          backgroundColor: AppColors.mainDarkBlue,
+          //backgroundColor: AppColors.mainDarkBlue,
           titleTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 20,
@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        colorScheme: ColorScheme.fromSeed(seedColor: AppColors.mainDarkBlue),
         useMaterial3: true,
         filledButtonTheme: FilledButtonThemeData(
           style: AppButtonStyle.linkButton,
