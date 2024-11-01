@@ -1,4 +1,12 @@
-part of 'movie_details_widget.dart';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:the_movie_db/domain/api_client/api_client.dart';
+import 'package:the_movie_db/domain/entity/movie_details_response.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
+import 'package:the_movie_db/ui/painters/circle_progress_bar.dart';
+import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({super.key, required this.primaryColor});
@@ -274,10 +282,6 @@ class _UserScoreWidget extends StatelessWidget {
                 height: 44,
                 child: CircleProgressBarWidget(
                   percent: score,
-                  backgroundColor: const Color.fromARGB(255, 10, 23, 25),
-                  indicatorColor: const Color.fromARGB(255, 37, 203, 103),
-                  backgroundIndicatorColor:
-                      const Color.fromARGB(255, 25, 54, 31),
                   lineWidth: 3,
                   margin: 3,
                 ),
