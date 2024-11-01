@@ -1,4 +1,9 @@
-part of 'movie_details_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:the_movie_db/domain/api_client/api_client.dart';
+import 'package:the_movie_db/domain/entity/movie_credits_response.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:the_movie_db/ui/painters/custom_text_painter.dart';
+import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 
 class MovieDetailsCastWidget extends StatelessWidget {
   const MovieDetailsCastWidget({super.key});

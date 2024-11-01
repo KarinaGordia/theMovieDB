@@ -1,27 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/domain/api_client/api_client.dart';
-import 'package:the_movie_db/domain/entity/movie_credits_response.dart';
-import 'package:the_movie_db/domain/entity/movie_details_response.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
-import 'package:the_movie_db/ui/navigation/main_navigation.dart';
-import 'package:the_movie_db/ui/painters/custom_text_painter.dart';
 import 'package:the_movie_db/ui/widgets/app/my_app_model.dart';
-import 'package:the_movie_db/ui/widgets/elements/circle_progress_bar.dart';
+import 'package:the_movie_db/ui/widgets/movie_details/movie_details_cast_widget.dart';
+import 'package:the_movie_db/ui/widgets/movie_details/movie_details_main_info_widget.dart';
+
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
-
-part 'movie_details_main_info_widget.dart';
-
-part 'movie_details_media_widget.dart';
-
-part 'movie_details_recommendations_widget.dart';
-
-part 'movie_details_season_widget.dart';
-
-part 'movie_details_cast_widget.dart';
-
-part 'movie_details_social_widget.dart';
 
 class MovieDetailsWidget extends StatefulWidget {
   const MovieDetailsWidget({super.key, required this.primaryColor});

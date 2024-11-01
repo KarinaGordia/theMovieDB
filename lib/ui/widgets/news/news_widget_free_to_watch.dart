@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/resources/app_images.dart';
-import 'package:the_movie_db/ui/widgets/elements/circle_progress_bar.dart';
+import 'package:the_movie_db/ui/painters/circle_progress_bar.dart';
 
 class NewsWidgetFreeToWatch extends StatefulWidget {
   const NewsWidgetFreeToWatch({super.key});
@@ -80,9 +80,6 @@ class _NewsWidgetFreeToWatchState extends State<NewsWidgetFreeToWatch> {
                             height: 40,
                             child: CircleProgressBarWidget(
                               percent: 68,
-                              backgroundColor: const Color.fromARGB(255, 10, 23, 25),
-                              indicatorColor: const Color.fromARGB(255, 37, 203, 103),
-                              backgroundIndicatorColor: const Color.fromARGB(255, 25, 54, 31),
                               lineWidth: 3,
                               margin: 3,
                             ),
