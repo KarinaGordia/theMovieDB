@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:the_movie_db/ui/theme/theme.dart';
 
 abstract class AppButtonStyle {
   static final ButtonStyle linkButton = ButtonStyle(
     padding: WidgetStateProperty.all(
-      EdgeInsets.symmetric(
+      const EdgeInsets.symmetric(
         horizontal: 19.2,
         vertical: 6,
       ),
@@ -14,7 +15,7 @@ abstract class AppButtonStyle {
       ),
     ),
     backgroundColor: WidgetStateProperty.all(
-      Color.fromRGBO(1, 180, 228, 1),
+      AppColors.blue,
     ),
   );
 }

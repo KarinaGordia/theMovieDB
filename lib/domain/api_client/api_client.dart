@@ -4,9 +4,6 @@ import 'dart:io';
 import 'package:the_movie_db/domain/entity/movie_details_response.dart';
 import 'package:the_movie_db/domain/entity/movie_list_response.dart';
 
-//karinagordya
-//login_FoR_flutter
-
 enum ApiClientExceptionType { network, auth, other, sessionExpired }
 
 enum MediaType { movie, tv }

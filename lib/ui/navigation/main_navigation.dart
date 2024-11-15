@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
-import 'package:the_movie_db/ui/widgets/auth/auth_model.dart';
+import 'package:the_movie_db/ui/widgets/auth/authorization_page_model.dart';
 import 'package:the_movie_db/ui/widgets/main_page/main_page_model.dart';
 import 'package:the_movie_db/ui/widgets/movie_trailer/movie_trailer_widget.dart';
 import 'package:the_movie_db/ui/widgets/widgets.dart';
@@ -21,7 +21,7 @@ class MainNavigation {
 
   final routes = <String, Widget Function(BuildContext)>{
     MainNavigationNames.auth: (context) => NotifierProvider(
-      create: () => AuthModel(),
+      create: () => AuthorizationPageModel(),
           child: const AuthorizationPage(),
         ),
     MainNavigationNames.mainPage: (context) => NotifierProvider(
