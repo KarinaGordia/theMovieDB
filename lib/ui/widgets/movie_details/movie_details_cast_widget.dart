@@ -10,12 +10,12 @@ class MovieDetailsCastWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
+          Padding(
             padding: EdgeInsets.only(left: 20.0),
             child: Text(
               'Top Billed Cast',
@@ -25,23 +25,23 @@ class MovieDetailsCastWidget extends StatelessWidget {
               ),
             ),
           ),
-          const _ActorsListView(),
-          TextButton(
-            onPressed: () {},
-            style: ButtonStyle(
-              padding: WidgetStateProperty.all(
-                const EdgeInsets.symmetric(horizontal: 20),
-              ),
-            ),
-            child: const Text(
-              'Full Cast & Crew',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 19.2,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+          _ActorsListView(),
+          // TextButton(
+          //   onPressed: () {},
+          //   style: ButtonStyle(
+          //     padding: WidgetStateProperty.all(
+          //       const EdgeInsets.symmetric(horizontal: 20),
+          //     ),
+          //   ),
+          //   child: const Text(
+          //     'Full Cast & Crew',
+          //     style: TextStyle(
+          //       color: Colors.black,
+          //       fontSize: 19.2,
+          //       fontWeight: FontWeight.w600,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
