@@ -22,7 +22,10 @@ class MainNavigation {
   }
 
   final routes = <String, Widget Function(BuildContext)>{
-    MainNavigationNames.loaderWidget: (context) => const LoaderWidget(),
+    MainNavigationNames.loaderWidget: (context) => NotifierProvider(
+      create: () => MainPageModel(),
+      child: const MainPage(),
+    ),
     MainNavigationNames.auth: (context) => NotifierProvider(
       create: () => AuthorizationPageModel(),
           child: const AuthorizationPage(),
