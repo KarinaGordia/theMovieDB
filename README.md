@@ -2,15 +2,10 @@
 
 A movie data base app
 
-## Getting Started
+## App Preview
 
-This project is a starting point for a Flutter application.
+<img src="https://github.com/user-attachments/assets/2535b03a-b539-4084-8e9c-77d1735adf41" width="350">
+<img src="https://github.com/user-attachments/assets/2e6fdecc-e7d6-4c3b-8c21-b10d615c0c13" width="350">
+<img src="https://github.com/user-attachments/assets/b7823cc3-3cf2-4a33-86a2-fb3de0701d94" width="350">
+<img src="https://github.com/user-attachments/assets/11c91de9-59ef-4db5-ae10-5f6b6778b268" width="350">
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
