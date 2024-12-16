@@ -17,12 +17,8 @@ class MainNavigationNames {
 }
 
 class MainNavigation {
-  String initialRoute(bool isAuth) {
-    return isAuth ? MainNavigationNames.mainPage : MainNavigationNames.auth;
-  }
-
   final routes = <String, Widget Function(BuildContext)>{
-    MainNavigationNames.loaderWidget: (context) => const LoaderWidget(),
+    MainNavigationNames.loaderWidget: (context) => LoaderWidget.create(),
     MainNavigationNames.auth: (context) => NotifierProvider(
       create: () => AuthorizationPageModel(),
           child: const AuthorizationPage(),
