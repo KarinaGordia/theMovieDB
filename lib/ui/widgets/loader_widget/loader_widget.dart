@@ -10,7 +10,6 @@ class LoaderWidget extends StatelessWidget {
       create: (context) => LoaderWidgetViewModel(context),
       lazy: false,
       child: const LoaderWidget(),
-
     );
   }
 

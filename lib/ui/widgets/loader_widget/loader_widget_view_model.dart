@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
+import 'package:the_movie_db/domain/services/auth_service.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
 class LoaderWidgetViewModel {
   final BuildContext context;
-  final _sessionDataProvider = SessionDataProvider();
+  final _authorizationService = AuthorizationService();
 
   LoaderWidgetViewModel(this.context) {
     asyncInit();
@@ -15,8 +15,7 @@ class LoaderWidgetViewModel {
   }
 
   Future<void> checkAuth() async {
-    final sessionId = await _sessionDataProvider.getSessionId();
-    final isAuth = sessionId != null;
+    final isAuth = await _authorizationService.isAuthorized();
     final nextScreen =
         isAuth ? MainNavigationNames.mainPage : MainNavigationNames.auth;
     Navigator.of(context).pushReplacementNamed(nextScreen);
