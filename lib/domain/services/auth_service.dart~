@@ -1,0 +1,16 @@
+import 'package:the_movie_db/domain/domain.dart';
+
+class AuthorizationService {
+  final _apiClient = ApiClient();
+  final _sessionDataProvider = SessionDataProvider();
+
+  Future<bool> isAuthorized() async {
+    final sessionId = await _sessionDataProvider.getSessionId();
+    return sessionId != null;
+  }
+
+  Future<void> logIn(String login, String password) async {
+    sessionId = await _apiClient.auth(userName: login, password: password);
+    accountId = await _apiClient.getAccountId(sessionId);
+}
+}
