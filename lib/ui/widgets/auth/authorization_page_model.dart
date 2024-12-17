@@ -5,7 +5,7 @@ import 'package:the_movie_db/domain/api_client/api_client.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
-class AuthorizationPageModel extends ChangeNotifier {
+class AuthorizationViewModel extends ChangeNotifier {
   final _apiClient = ApiClient();
   final _sessionDataProvider = SessionDataProvider();
 
