@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/domain.dart';
@@ -5,6 +7,7 @@ import 'package:the_movie_db/domain/domain.dart';
 class MovieDetailsModel extends ChangeNotifier {
   final _sessionDataProvider = SessionDataProvider();
   final _apiClient = ApiClient();
+  final _accountApiClient = AccountApiClient();
 
   final int movieId;
   MovieDetailsResponse? _movieDetails;
@@ -70,7 +73,7 @@ class MovieDetailsModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _apiClient.markAsFavorite(
+      await _accountApiClient.markAsFavorite(
           accountId, sessionId, MediaType.movie, movieId, _isFavorite);
     } on ApiClientException catch (e) {
       _handleApiClientException(e);
@@ -118,7 +121,7 @@ class MovieDetailsModel extends ChangeNotifier {
         onSessionExpired?.call();
         break;
       default:
-        print(exception);
+        log('$exception');
     }
   }
 }
