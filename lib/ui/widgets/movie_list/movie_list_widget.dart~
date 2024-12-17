@@ -65,7 +65,7 @@ class CardMovie extends StatelessWidget {
             children: [
               if (imagePath != null)
                 Image.network(
-                  ImageDownloader.imageUrl(imagePath),
+                  ApiClient.imageUrl(imagePath),
                   width: 90,
                 ),
               Expanded(

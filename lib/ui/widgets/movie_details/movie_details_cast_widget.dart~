@@ -151,7 +151,7 @@ class _ActorCard extends StatelessWidget {
           children: [
             poster != null
                 ? Image.network(
-              ImageDownloader.imageUrl(poster),
+                    ApiClient.imageUrl(poster),
                     height: posterHeight,
                     width: width,
                     fit: BoxFit.cover,
