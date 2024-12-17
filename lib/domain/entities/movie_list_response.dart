@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:the_movie_db/domain/entity/movie.dart';
+import 'entities.dart';
 
 part 'movie_list_response.g.dart';
 

@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:the_movie_db/domain/api_client/api_client.dart';
-import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
-import 'package:the_movie_db/domain/entity/movie_certification_response.dart';
-import 'package:the_movie_db/domain/entity/movie_details_response.dart';
+import 'package:the_movie_db/domain/domain.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
   final _sessionDataProvider = SessionDataProvider();

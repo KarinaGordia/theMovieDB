@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/domain/api_client/api_client.dart';
-import 'package:the_movie_db/domain/entity/movie.dart';
+import 'package:the_movie_db/domain/domain.dart';
 import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_model.dart';
 
