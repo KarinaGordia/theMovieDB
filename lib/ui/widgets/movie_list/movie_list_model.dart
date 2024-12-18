@@ -5,9 +5,25 @@ import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/domain.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
+class MovieCardData {
+  final int id;
+  final String title;
+  final String? posterPath;
+  final String releaseDate;
+  final String overview;
+
+  MovieCardData({
+    required this.id,
+    required this.title,
+    required this.posterPath,
+    required this.releaseDate,
+    required this.overview,
+  });
+}
+
 class MovieListViewModel extends ChangeNotifier {
   final _apiClient = ApiClient();
-  final _movies = <Movie>[];
+  final _movies = <MovieCardData>[];
   late int _currentPage;
   late int _totalPage;
   var _isLoadingInProgress = false;
@@ -15,7 +31,7 @@ class MovieListViewModel extends ChangeNotifier {
   String _locale = '';
   Timer? searchDebounce;
 
-  List<Movie> get movies => List.unmodifiable(_movies);
+  List<MovieCardData> get movies => List.unmodifiable(_movies);
   late DateFormat _dateFormat;
 
   String stringFromDate(DateTime? date) =>
@@ -52,7 +68,7 @@ class MovieListViewModel extends ChangeNotifier {
 
     try {
       final moviesResponse = await _loadMovieList(nextPage, _locale);
-      _movies.addAll(moviesResponse.movies);
+      _movies.addAll(moviesResponse.movies.map(_makeCardData).toList());
       _currentPage = moviesResponse.page;
       _totalPage = moviesResponse.totalPages;
       _isLoadingInProgress = false;
@@ -60,6 +76,19 @@ class MovieListViewModel extends ChangeNotifier {
     } catch (e) {
       _isLoadingInProgress = false;
     }
+  }
+
+  MovieCardData _makeCardData(Movie movie) {
+    final releaseDate = movie.releaseDate;
+    final releaseDateTitle =
+    releaseDate != null ? _dateFormat.format(releaseDate) : '';
+    return MovieCardData(
+      id: movie.id,
+      posterPath: movie.posterPath,
+      title: movie.title,
+      releaseDate: releaseDateTitle,
+      overview: movie.overview,
+    );
   }
 
   Future<void> searchMovie(String text) async {

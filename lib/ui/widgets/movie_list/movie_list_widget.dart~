@@ -82,7 +82,7 @@ class _MovieCard extends StatelessWidget {
     final model = context.read<MovieListViewModel>();
     final movie = model.movies[movieIndex];
     final imagePath = movie.posterPath;
-
+    
     return Stack(
       children: [
         Card(
