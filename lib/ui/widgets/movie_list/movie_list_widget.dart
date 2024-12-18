@@ -8,7 +8,7 @@ class MovieListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieListModel>(context);
+    final model = NotifierProvider.watch<MovieListViewModel>(context);
     if (model == null) return const SizedBox.shrink();
     return Stack(
       children: [
@@ -52,7 +52,7 @@ class CardMovie extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<MovieListModel>(context);
+    final model = NotifierProvider.read<MovieListViewModel>(context);
     final imagePath = movie.posterPath;
     final releaseDate = movie.releaseDate;
 

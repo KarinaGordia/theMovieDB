@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/domain.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
-class MovieListModel extends ChangeNotifier {
+class MovieListViewModel extends ChangeNotifier {
   final _apiClient = ApiClient();
   final _movies = <Movie>[];
   late int _currentPage;

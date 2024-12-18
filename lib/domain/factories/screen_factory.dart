@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart' as old_provider;
-import 'package:the_movie_db/ui/widgets/widgets.dart';
+import 'package:the_movie_db/library/widgets/inherited/provider.dart'
+    as old_provider;
+import 'package:the_movie_db/ui/ui.dart';
 
 class ScreenFactory {
   Widget makeLoader() {
@@ -20,10 +21,7 @@ class ScreenFactory {
   }
 
   Widget makeMain() {
-    return old_provider.NotifierProvider(
-      create: () => MainPageModel(),
-      child: const MainPage(),
-    );
+    return const MainPage();
   }
 
   Widget makeMovieDetails(int movieId) {
@@ -37,5 +35,16 @@ class ScreenFactory {
 
   Widget makeMovieTrailer(String youTubeKey) {
     return MovieTrailerWidget(youTubeKey: youTubeKey);
+  }
+
+  Widget makeNews() {
+    return const NewsWidget();
+  }
+
+  Widget makeMovieList() {
+    return ChangeNotifierProvider(
+      create: (_) => MovieListViewModel(),
+      child: const MovieListWidget(),
+    );
   }
 }
