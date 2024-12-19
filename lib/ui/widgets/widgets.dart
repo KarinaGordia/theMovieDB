@@ -1,10 +1,10 @@
 export 'app/my_app.dart';
-export 'app/my_app_model.dart';
 export 'auth/authorization_page_widget.dart';
 export 'auth/authorization_page_model.dart';
 export 'loader_widget/loader_widget.dart';
 export 'loader_widget/loader_widget_view_model.dart';
 export 'main_page/main_page_widget.dart';
+export 'main_page/main_page_view_model.dart';
 export 'movie_details/movie_details.dart';
 export 'movie_list/movie_list_widget.dart';
 export 'movie_list/movie_list_model.dart';

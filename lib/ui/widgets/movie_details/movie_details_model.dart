@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/domain.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
+  final _authService = AuthorizationService();
   final _sessionDataProvider = SessionDataProvider();
   final _apiClient = MovieApiClient();
   final _accountApiClient = AccountApiClient();
@@ -16,7 +18,6 @@ class MovieDetailsModel extends ChangeNotifier {
   String _locale = '';
   String _countryCode = '';
   late DateFormat _dateFormat;
-  Future<void>? Function()? onSessionExpired;
 
   MovieDetailsResponse? get movieDetails => _movieDetails;
 
@@ -46,11 +47,11 @@ class MovieDetailsModel extends ChangeNotifier {
     _locale = locale;
     _countryCode = countryCode ?? '';
     _dateFormat = DateFormat.yMd(locale);
-    await loadMovieDetails();
+    await loadMovieDetails(context);
     getLocaleMovieReleaseInfo();
   }
 
-  Future<void> loadMovieDetails() async {
+  Future<void> loadMovieDetails(BuildContext context) async {
     try {
       _movieDetails = await _apiClient.getMovieDetails(movieId, _locale);
       final sessionId = await _sessionDataProvider.getSessionId();
@@ -60,11 +61,11 @@ class MovieDetailsModel extends ChangeNotifier {
 
       notifyListeners();
     } on ApiClientException catch (e) {
-      _handleApiClientException(e);
+      _handleApiClientException(e, context);
     }
   }
 
-  Future<void> addToFavorite() async {
+  Future<void> addToFavorite(BuildContext context) async {
     final sessionId = await _sessionDataProvider.getSessionId();
     final accountId = await _sessionDataProvider.getAccountId();
     if (sessionId == null || accountId == null) return;
@@ -76,7 +77,7 @@ class MovieDetailsModel extends ChangeNotifier {
       await _accountApiClient.markAsFavorite(
           accountId, sessionId, MediaType.movie, movieId, _isFavorite);
     } on ApiClientException catch (e) {
-      _handleApiClientException(e);
+      _handleApiClientException(e, context);
     }
   }
 
@@ -115,11 +116,11 @@ class MovieDetailsModel extends ChangeNotifier {
     return members;
   }
 
-  void _handleApiClientException(ApiClientException exception) {
+  void _handleApiClientException(ApiClientException exception, BuildContext context,) {
     switch (exception.type) {
       case ApiClientExceptionType.sessionExpired:
-        onSessionExpired?.call();
-        break;
+        _authService.logOut();
+        MainNavigation.resetNavigation(context);
       default:
         log('$exception');
     }

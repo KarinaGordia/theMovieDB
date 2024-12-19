@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:the_movie_db/domain/domain.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
-import 'package:the_movie_db/ui/widgets/app/my_app_model.dart';
+import 'package:the_movie_db/ui/ui.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -23,7 +23,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final appModel = Provider.read<MyAppModel>(context);
+    final model = context.read<MainPageViewModel>();
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -31,7 +31,7 @@ class _MainPageState extends State<MainPage> {
         ),
         actions: [
           IconButton(
-            onPressed: () => appModel?.resetSession(context),
+            onPressed: () => model.logOut(context),
             icon: const Icon(
               Icons.logout_outlined,
             ),

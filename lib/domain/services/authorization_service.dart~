@@ -19,7 +19,7 @@ class AuthorizationService {
   }
 
   Future<void> logOut() async {
-    await _sessionDataProvider.deleteSessionId();
-    await _sessionDataProvider.deleteAccountId();
+    await _sessionDataProvider.setSessionId(null);
+    await _sessionDataProvider.setAccountId(null);
   }
 }

@@ -1,0 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:the_movie_db/domain/domain.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
+
+class MyAppModel {
+
+
+  Future<void> resetSession(BuildContext context) async {
+  }
+
+
+}

@@ -21,10 +21,7 @@ class ScreenFactory {
   }
 
   Widget makeMain() {
-    return Provider(
-      create: (_) => MainPageViewModel(),
-      child: const MainPage(),
-    );
+    return const MainPage();
   }
 
   Widget makeMovieDetails(int movieId) {

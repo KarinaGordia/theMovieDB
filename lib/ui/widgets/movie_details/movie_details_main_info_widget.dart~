@@ -189,7 +189,7 @@ class _TopPosterWidget extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           backdropPath != null
-              ? Image.network(ApiClient.imageUrl(backdropPath))
+              ? Image.network(ImageDownloader.imageUrl(backdropPath))
               : const SizedBox.shrink(),
           if (posterPath != null)
             Positioned(
@@ -197,7 +197,7 @@ class _TopPosterWidget extends StatelessWidget {
               bottom: 20,
               left: 20,
               child: Image.network(
-                ApiClient.imageUrl(posterPath),
+                ImageDownloader.imageUrl(posterPath),
               ),
             ),
           Positioned(
