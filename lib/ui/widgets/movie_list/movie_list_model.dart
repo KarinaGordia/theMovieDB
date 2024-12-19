@@ -22,7 +22,7 @@ class MovieCardData {
 }
 
 class MovieListViewModel extends ChangeNotifier {
-  final _apiClient = ApiClient();
+  final _apiClient = MovieApiClient();
   final _movies = <MovieCardData>[];
   late int _currentPage;
   late int _totalPage;

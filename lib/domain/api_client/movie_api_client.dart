@@ -1,7 +1,7 @@
 import 'package:the_movie_db/configuration/configuration.dart';
 import 'package:the_movie_db/domain/domain.dart';
 
-class ApiClient {
+class MovieApiClient {
   final _networkClient = NetworkClient();
 
   Future<MovieListResponse> getPopularMovieList(int page, String locale) async {

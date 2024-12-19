@@ -6,7 +6,7 @@ import 'package:the_movie_db/domain/domain.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
   final _sessionDataProvider = SessionDataProvider();
-  final _apiClient = MovieApiClient();
+  final _apiClient = ApiClient();
   final _accountApiClient = AccountApiClient();
 
   final int movieId;
