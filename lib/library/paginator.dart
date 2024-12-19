@@ -19,6 +19,7 @@ class Paginator<T> {
   var _isLoadingInProgress = false;
   final PaginatorLoad<T> load;
 
+  List<T> get data => _data;
   Paginator(this.load);
 
   Future<void> loadNextPage() async {

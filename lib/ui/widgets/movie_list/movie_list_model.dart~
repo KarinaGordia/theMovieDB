@@ -108,9 +108,7 @@ class MovieListViewModel extends ChangeNotifier {
       if (_searchQuery == searchQuery) return;
       _searchQuery = searchQuery?.trim();
       _movies.clear();
-      if(isSearchMode) {
-        await _searchedMoviesPaginator.reset();
-      }
+      if(isSearchMode) await _searchedMoviesPaginator.reset();
       await _loadMovieList();
     });
   }
