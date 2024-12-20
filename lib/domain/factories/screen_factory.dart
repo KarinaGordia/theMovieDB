@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart'
-    as old_provider;
 import 'package:the_movie_db/ui/ui.dart';
 
 class ScreenFactory {
@@ -28,8 +26,8 @@ class ScreenFactory {
   }
 
   Widget makeMovieDetails(int movieId) {
-    return old_provider.NotifierProvider(
-      create: () => MovieDetailsModel(movieId),
+    return ChangeNotifierProvider(
+      create: (_) => MovieDetailsModel(movieId),
       child: const MovieDetailsWidget(
         primaryColor: Color.fromRGBO(10, 31, 52, 1),
       ),

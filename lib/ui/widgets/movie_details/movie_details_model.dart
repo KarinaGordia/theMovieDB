@@ -19,6 +19,7 @@ class MovieDetailsModel extends ChangeNotifier {
   String _countryCode = '';
   late DateFormat _dateFormat;
 
+
   MovieDetailsResponse? get movieDetails => _movieDetails;
 
   CountryReleaseInfo? get movieReleaseInfo => _localeReleaseInfo;

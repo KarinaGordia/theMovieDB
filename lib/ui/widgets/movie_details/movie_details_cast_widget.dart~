@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:the_movie_db/domain/domain.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/painters/custom_text_painter.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 
@@ -97,10 +97,7 @@ class _ActorsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cast = NotifierProvider.watch<MovieDetailsModel>(context)
-        ?.movieDetails
-        ?.credits
-        .cast;
+    var cast = context.select((MovieDetailsModel model) => model.movieDetails?.credits.cast);
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
     if (cast.length > 9) {
       cast = cast.sublist(0, 9);
@@ -151,7 +148,7 @@ class _ActorCard extends StatelessWidget {
           children: [
             poster != null
                 ? Image.network(
-                    ApiClient.imageUrl(poster),
+              ImageDownloader.imageUrl(poster),
                     height: posterHeight,
                     width: width,
                     fit: BoxFit.cover,

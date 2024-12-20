@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_cast_widget.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_main_info_widget.dart';
 
@@ -18,7 +18,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    NotifierProvider.read<MovieDetailsModel>(context)?.setupLocale(context);
+    context.read<MovieDetailsModel>().setupLocale(context);
   }
 
   @override
@@ -48,16 +48,14 @@ class _MovieDetailsBodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watch<MovieDetailsModel>(context);
-    final movieDetails = model?.movieDetails;
-    if(movieDetails == null) {
+    final movieDetails =
+        context.select((MovieDetailsModel model) => model.movieDetails);
+    if (movieDetails == null) {
       return const Center(child: CircularProgressIndicator());
     }
     return ListView(
       children: [
-        MovieDetailsMainInfoWidget(
-          primaryColor: color,
-        ),
+        MovieDetailsMainInfoWidget(primaryColor: color),
         const ColoredBox(
           color: Colors.white,
           child: MovieDetailsCastWidget(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:the_movie_db/domain/domain.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/painters/custom_text_painter.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 
@@ -81,8 +81,8 @@ class _ActorsListView extends StatelessWidget {
     return textPainter.size.height;
   }
 
-  double _calculateCardHeight(
-      BuildContext context, List<CastMember> members, double stringWidth, double additionalHeight) {
+  double _calculateCardHeight(BuildContext context, List<CastMember> members,
+      double stringWidth, double additionalHeight) {
     final maxNameHeight = members
         .map((member) =>
             _calculateTextHeight(
@@ -97,16 +97,19 @@ class _ActorsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cast = NotifierProvider.watch<MovieDetailsModel>(context)
-        ?.movieDetails
-        ?.credits
-        .cast;
+    var cast = context
+        .select((MovieDetailsModel model) => model.movieDetails?.credits.cast);
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
     if (cast.length > 9) {
       cast = cast.sublist(0, 9);
     }
 
-    final cardHeight = _calculateCardHeight(context, cast, textWidth, additionalHeight);
+    final cardHeight = _calculateCardHeight(
+      context,
+      cast,
+      textWidth,
+      additionalHeight,
+    );
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -151,7 +154,7 @@ class _ActorCard extends StatelessWidget {
           children: [
             poster != null
                 ? Image.network(
-              ImageDownloader.imageUrl(poster),
+                    ImageDownloader.imageUrl(poster),
                     height: posterHeight,
                     width: width,
                     fit: BoxFit.cover,
@@ -168,11 +171,12 @@ class _ActorCard extends StatelessWidget {
               padding: const EdgeInsets.all(10.0),
               child: CustomPaint(
                 painter: CustomTextPainter(
-                    labelText: castMember.name,
-                    subText: castMember.character,
-                    labelTextStyle: nameTextStyle,
-                    subTextStyle: characterTextStyle,
-                    stringWidth: textWidth,),
+                  labelText: castMember.name,
+                  subText: castMember.character,
+                  labelTextStyle: nameTextStyle,
+                  subTextStyle: characterTextStyle,
+                  stringWidth: textWidth,
+                ),
               ),
             ),
           ],
@@ -181,5 +185,3 @@ class _ActorCard extends StatelessWidget {
     );
   }
 }
-
-
