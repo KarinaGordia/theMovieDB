@@ -18,16 +18,16 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    context.read<MovieDetailsModel>().setupLocale(context);
+    Future.microtask(() =>
+        context.read<MovieDetailsModel>().setupLocale(context),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'The Movie DB',
-        ),
+        title: const _AppBarTitle(),
         backgroundColor: const Color.fromRGBO(3, 37, 65, 1.0),
       ),
       body: ColoredBox(
@@ -35,6 +35,16 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
         child: _MovieDetailsBodyWidget(color: widget.primaryColor),
       ),
     );
+  }
+}
+
+class _AppBarTitle extends StatelessWidget {
+  const _AppBarTitle({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final movieName = context.select((MovieDetailsModel model) => model.data.title);
+    return Text(movieName, overflow: TextOverflow.ellipsis,);
   }
 }
 
@@ -48,9 +58,9 @@ class _MovieDetailsBodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieDetails =
-        context.select((MovieDetailsModel model) => model.movieDetails);
-    if (movieDetails == null) {
+    final isLoading =
+        context.select((MovieDetailsModel model) => model.data.isLoading);
+    if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
     return ListView(

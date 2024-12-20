@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/domain/domain.dart';
-import 'package:the_movie_db/library/widgets/inherited/provider.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:the_movie_db/ui/painters/circle_progress_bar.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
@@ -59,6 +58,40 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
   }
 }
 
+class _MovieNameWidget extends StatelessWidget {
+  const _MovieNameWidget({required this.textColor});
+
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final movieDetails =
+    context.select((MovieDetailsModel model) => model.movieDetails);
+    final releaseYear = movieDetails?.releaseDate?.year;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: movieDetails?.title,
+              style: TextStyle(
+                  color: textColor, fontWeight: FontWeight.w600, fontSize: 20),
+            ),
+            TextSpan(
+              text: releaseYear != null ? ' ($releaseYear)' : '',
+              style: const TextStyle(
+                  color: Color.fromRGBO(239, 239, 239, 1),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 class _CrewWidget extends StatelessWidget {
   const _CrewWidget();
 
@@ -169,6 +202,8 @@ class _OverviewWidget extends StatelessWidget {
   }
 }
 
+
+
 class _TopPosterWidget extends StatelessWidget {
   const _TopPosterWidget();
 
@@ -218,41 +253,6 @@ class _TopPosterWidget extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _MovieNameWidget extends StatelessWidget {
-  const _MovieNameWidget({required this.textColor});
-
-  final Color textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final movieDetails =
-    context.select((MovieDetailsModel model) => model.movieDetails);
-    final releaseYear = movieDetails?.releaseDate?.year;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: movieDetails?.title,
-              style: TextStyle(
-                  color: textColor, fontWeight: FontWeight.w600, fontSize: 20),
-            ),
-            TextSpan(
-              text: releaseYear != null ? ' ($releaseYear)' : '',
-              style: const TextStyle(
-                  color: Color.fromRGBO(239, 239, 239, 1),
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16),
-            ),
-          ],
-        ),
       ),
     );
   }
