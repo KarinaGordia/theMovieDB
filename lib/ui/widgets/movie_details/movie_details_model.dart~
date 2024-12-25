@@ -76,7 +76,7 @@ class MovieDetailsModel extends ChangeNotifier {
   MovieDetailsModel(this.movieId);
 
   Future<void> setupLocale(BuildContext context, Locale locale) async {
-    if (!_localeStorage.updateLocale(locale)) return;
+    if(!_localeStorage.updateLocale(locale)) return;
     _dateFormat = DateFormat.yMd(_localeStorage.localeTag);
     _updateData(null, false);
     await loadMovieDetails(context);
@@ -148,10 +148,8 @@ class MovieDetailsModel extends ChangeNotifier {
 
   Future<void> loadMovieDetails(BuildContext context) async {
     try {
-      final movieDetails = await _service.loadMovieDetails(
-        movieId: movieId,
-        locale: _localeStorage.localeTag,
-      );
+      final movieDetails =
+          await _service.loadMovieDetails(movieId: movieId, locale: _locale);
 
       _updateData(movieDetails.details, movieDetails.isFavorite);
     } on ApiClientException catch (e) {

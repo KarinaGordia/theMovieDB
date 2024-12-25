@@ -28,7 +28,7 @@ class MovieListViewModel extends ChangeNotifier {
   late final Paginator<Movie> _searchedMoviesPaginator;
   final _movies = <MovieCardData>[];
   String? _searchQuery;
-  String _locale = '';
+  final _localeStorage = LocaleStorageModel();
   late DateFormat _dateFormat;
   Timer? searchDebounce;
 
@@ -41,7 +41,7 @@ class MovieListViewModel extends ChangeNotifier {
 
   MovieListViewModel() {
     _popularMoviesPaginator = Paginator<Movie>((page) async {
-      final result = await _service.getPopularMovieList(page, _locale);
+      final result = await _service.getPopularMovieList(page,_localeStorage.localeTag);
       return PaginatorLoadResult(
         data: result.movies,
         currentPage: result.page,
@@ -51,7 +51,7 @@ class MovieListViewModel extends ChangeNotifier {
     _searchedMoviesPaginator = Paginator<Movie>((page) async {
       final result = await _service.getSearchedMovieList(
         page,
-        _locale,
+        _localeStorage.localeTag,
         _searchQuery ?? '',
       );
       return PaginatorLoadResult(
@@ -62,11 +62,9 @@ class MovieListViewModel extends ChangeNotifier {
     });
   }
 
-  Future<void> setupLocale(BuildContext context) async {
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    if (_locale == locale) return;
-    _locale = locale;
-    _dateFormat = DateFormat.yMMMMd(locale);
+  Future<void> setupLocale(Locale locale) async {
+    if (!_localeStorage.updateLocale(locale)) return;
+    _dateFormat = DateFormat.yMMMMd(_localeStorage.localeTag);
     await _resetList();
   }
 
