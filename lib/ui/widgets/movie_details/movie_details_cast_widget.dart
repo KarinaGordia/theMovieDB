@@ -98,11 +98,7 @@ class _ActorsListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cast = context
-        .select((MovieDetailsModel model) => model.movieDetails?.credits.cast);
-    if (cast == null || cast.isEmpty) return const SizedBox.shrink();
-    if (cast.length > 9) {
-      cast = cast.sublist(0, 9);
-    }
+        .select((MovieDetailsModel model) => model.data.cast);
 
     final cardHeight = _calculateCardHeight(
       context,

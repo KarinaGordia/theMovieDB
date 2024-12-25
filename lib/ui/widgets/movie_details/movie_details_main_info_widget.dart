@@ -1,7 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'package:the_movie_db/domain/domain.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:the_movie_db/ui/painters/circle_progress_bar.dart';
@@ -48,7 +48,9 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _OverviewWidget(
-                  textColor: textColor, secondaryTextColor: secondaryTextColor),
+                textColor: textColor,
+                secondaryTextColor: secondaryTextColor,
+              ),
               const _CrewWidget(),
             ],
           ),
@@ -57,152 +59,6 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
     );
   }
 }
-
-class _MovieNameWidget extends StatelessWidget {
-  const _MovieNameWidget({required this.textColor});
-
-  final Color textColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final movieDetails =
-    context.select((MovieDetailsModel model) => model.movieDetails);
-    final releaseYear = movieDetails?.releaseDate?.year;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      child: RichText(
-        textAlign: TextAlign.center,
-        text: TextSpan(
-          children: [
-            TextSpan(
-              text: movieDetails?.title,
-              style: TextStyle(
-                  color: textColor, fontWeight: FontWeight.w600, fontSize: 20),
-            ),
-            TextSpan(
-              text: releaseYear != null ? ' ($releaseYear)' : '',
-              style: const TextStyle(
-                  color: Color.fromRGBO(239, 239, 239, 1),
-                  fontWeight: FontWeight.w400,
-                  fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-class _CrewWidget extends StatelessWidget {
-  const _CrewWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    final members =
-        context.select((MovieDetailsModel model) => model.getMainCrewMembers());
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
-      child: Wrap(
-        runSpacing: 20,
-        spacing: 20,
-        children: members.entries
-            .map((entry) => _CreatorProfileWidget(
-                  name: entry.key,
-                  occupation: entry.value.join(', '),
-                ))
-            .toList(),
-      ),
-    );
-  }
-}
-
-class _CreatorProfileWidget extends StatelessWidget {
-  const _CreatorProfileWidget({
-    required this.name,
-    required this.occupation,
-  });
-
-  final String name;
-  final String occupation;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 170,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            name,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Text(
-            occupation,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 14.4,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _OverviewWidget extends StatelessWidget {
-  const _OverviewWidget({
-    required this.textColor,
-    required this.secondaryTextColor,
-  });
-
-  final Color textColor;
-  final Color secondaryTextColor;
-
-  @override
-  Widget build(BuildContext context) {
-    final movieDetails =
-        context.select((MovieDetailsModel model) => model.movieDetails);
-    final tagline = movieDetails?.tagline ?? '';
-    final overview = movieDetails?.overview ?? '';
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          tagline,
-          style: TextStyle(
-              color: secondaryTextColor,
-              fontSize: 17.6,
-              fontStyle: FontStyle.italic),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Text(
-            'Overview',
-            style: TextStyle(
-                color: textColor, fontSize: 20.8, fontWeight: FontWeight.w600),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10.0),
-          child: Text(
-            overview,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 16,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-
 
 class _TopPosterWidget extends StatelessWidget {
   const _TopPosterWidget();
@@ -216,18 +72,18 @@ class _TopPosterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.read<MovieDetailsModel>();
-    final movieDetails =
-    context.select((MovieDetailsModel model) => model.movieDetails);
-    final backdropPath = movieDetails?.backdropPath;
-    final posterPath = movieDetails?.posterPath;
+    final posterData =
+        context.select((MovieDetailsModel model) => model.data.posterData);
+    final backdropPath = posterData.backdropPath;
+    final posterPath = posterData.posterPath;
+
     return AspectRatio(
       aspectRatio: calculateAspectRatio(context),
       child: Stack(
         alignment: Alignment.center,
         children: [
-          backdropPath != null
-              ? Image.network(ImageDownloader.imageUrl(backdropPath))
-              : const SizedBox.shrink(),
+          if (backdropPath != null)
+            Image.network(ImageDownloader.imageUrl(backdropPath)),
           if (posterPath != null)
             Positioned(
               top: 20,
@@ -242,9 +98,7 @@ class _TopPosterWidget extends StatelessWidget {
             top: 10,
             child: IconButton(
               onPressed: () => model.addToFavorite(context),
-              icon: Icon(model.isFavorite == true
-                  ? Icons.favorite
-                  : Icons.favorite_outline_outlined),
+              icon: Icon(posterData.favoriteIcon),
               color: Colors.white,
               style: const ButtonStyle(
                   fixedSize: WidgetStatePropertyAll(Size(50, 50)),
@@ -258,6 +112,40 @@ class _TopPosterWidget extends StatelessWidget {
   }
 }
 
+class _MovieNameWidget extends StatelessWidget {
+  const _MovieNameWidget({required this.textColor});
+
+  final Color textColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final movieDetails =
+        context.select((MovieDetailsModel model) => model.data);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+      child: RichText(
+        textAlign: TextAlign.center,
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: movieDetails.title,
+              style: TextStyle(
+                  color: textColor, fontWeight: FontWeight.w600, fontSize: 20),
+            ),
+            TextSpan(
+              text: movieDetails.releaseYear,
+              style: const TextStyle(
+                  color: Color.fromRGBO(239, 239, 239, 1),
+                  fontWeight: FontWeight.w400,
+                  fontSize: 16),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _UserScoreWidget extends StatelessWidget {
   const _UserScoreWidget({required this.textColor});
 
@@ -265,9 +153,8 @@ class _UserScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final voteAverage =
-    context.select((MovieDetailsModel model) => model.movieDetails?.voteAverage ?? 0);
-    final score = (voteAverage * 10).toInt();
+    final score =
+        context.select((MovieDetailsModel model) => model.data.voteAverage);
     final textStyle = TextStyle(
       color: textColor,
       fontWeight: FontWeight.w700,
@@ -318,44 +205,17 @@ class _GeneralMovieInfoWidget extends StatelessWidget {
 
   final Color textColor;
 
-  String _movieRuntimeInHours(int? runtime) {
-    if (runtime == null) return 'N/A';
-    final duration = Duration(minutes: runtime);
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-
-    if (hours == 0) return '${minutes}m';
-    if (minutes == 0) return '${hours}h';
-    return '${hours}h ${minutes}m';
-  }
-
-  String _getGenresString(List<Genre>? genres) {
-    if (genres != null && genres.isNotEmpty) {
-      var genreNames = <String>[];
-      for (var genre in genres) {
-        genreNames.add(genre.name);
-      }
-
-      return genreNames.join(', ');
-    }
-
-    return '';
-  }
-
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieDetailsModel>();
     final movieDetails =
-    context.select((MovieDetailsModel model) => model.movieDetails);
-    final movieReleaseInfo =
-    context.select((MovieDetailsModel model) => model.movieReleaseInfo);
+        context.select((MovieDetailsModel model) => model.data);
+    final releaseInfo = movieDetails.releaseInfo;
 
-    final releaseInfo = movieReleaseInfo?.releaseDates.first;
-    final certification = releaseInfo?.certification ?? '';
-    final releaseDate = model.stringFromDate(releaseInfo?.releaseDate);
-    final countryCode = '(${movieReleaseInfo?.iso ?? ''})';
-    final runtime = _movieRuntimeInHours(movieDetails?.runtime);
-    final genres = _getGenresString(movieDetails?.genres);
+    final certification = releaseInfo?.certification;
+    final releaseDate = releaseInfo?.releaseDate ?? '';
+    final countryCode = releaseInfo?.countryCode ?? '';
+    final runtime = movieDetails.runtime;
+    final genres = movieDetails.genres;
 
     var textStyle = TextStyle(
       color: textColor,
@@ -382,7 +242,7 @@ class _GeneralMovieInfoWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (certification != '')
+                if (certification != null)
                   Container(
                     padding: const EdgeInsets.only(
                         top: 1, bottom: 2.4, left: 4, right: 4),
@@ -426,11 +286,8 @@ class _PlayTrailerButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final movieDetails =
-    context.select((MovieDetailsModel model) => model.movieDetails);
-    final videos = movieDetails?.videos.results
-        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
-    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
+    final trailerKey =
+        context.select((MovieDetailsModel model) => model.data.trailerKey);
     if (trailerKey == null) return const SizedBox.shrink();
     return SizedBox(
       height: 24,
@@ -457,6 +314,116 @@ class _PlayTrailerButton extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _OverviewWidget extends StatelessWidget {
+  const _OverviewWidget({
+    required this.textColor,
+    required this.secondaryTextColor,
+  });
+
+  final Color textColor;
+  final Color secondaryTextColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final movieDetails =
+        context.select((MovieDetailsModel model) => model.data);
+    final tagline = movieDetails.tagline;
+    final overview = movieDetails.overview;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          tagline,
+          style: TextStyle(
+              color: secondaryTextColor,
+              fontSize: 17.6,
+              fontStyle: FontStyle.italic),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Text(
+            'Overview',
+            style: TextStyle(
+                color: textColor, fontSize: 20.8, fontWeight: FontWeight.w600),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10.0),
+          child: Text(
+            overview,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CrewWidget extends StatelessWidget {
+  const _CrewWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final members =
+        context.select((MovieDetailsModel model) => model.data.crew);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Wrap(
+        runSpacing: 20,
+        spacing: 20,
+        children: members.entries
+            .map((entry) => _CreatorProfileWidget(
+                  name: entry.key,
+                  occupation: entry.value,
+                ))
+            .toList(),
+      ),
+    );
+  }
+}
+
+class _CreatorProfileWidget extends StatelessWidget {
+  const _CreatorProfileWidget({
+    required this.name,
+    required this.occupation,
+  });
+
+  final String name;
+  final String occupation;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 170,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Text(
+            occupation,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.4,
+            ),
+          ),
+        ],
       ),
     );
   }
