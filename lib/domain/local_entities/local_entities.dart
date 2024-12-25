@@ -1,0 +1,1 @@
+export 'local_movie_details.dart';

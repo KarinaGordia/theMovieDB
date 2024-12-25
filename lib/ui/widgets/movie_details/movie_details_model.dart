@@ -9,12 +9,14 @@ class MovieDetailsPosterData {
   final String? posterPath;
   final String? backdropPath;
   final bool isFavorite;
-  IconData get favoriteIcon => isFavorite ? Icons.favorite : Icons.favorite_outline_outlined;
+
+  IconData get favoriteIcon =>
+      isFavorite ? Icons.favorite : Icons.favorite_outline_outlined;
 
   MovieDetailsPosterData({
     required this.posterPath,
     required this.backdropPath,
-   this.isFavorite = false,
+    this.isFavorite = false,
   });
 
   MovieDetailsPosterData copyWith({
@@ -30,12 +32,12 @@ class MovieDetailsPosterData {
   }
 }
 
-class MovieReleaseInfo {
+class MovieReleaseData {
   final String? certification;
   final String? releaseDate;
   final String? countryCode;
 
-  MovieReleaseInfo({
+  MovieReleaseData({
     required this.certification,
     required this.releaseDate,
     required this.countryCode,
@@ -56,16 +58,14 @@ class MovieDetailsData {
   String? trailerKey;
   String genres = '';
   String runtime = '';
-  MovieReleaseInfo? releaseInfo;
+  MovieReleaseData? releaseInfo;
   Map<String, String> crew = {};
   List<CastMember> cast = [];
 }
 
 class MovieDetailsModel extends ChangeNotifier {
   final _authService = AuthorizationService();
-  final _sessionDataProvider = SessionDataProvider();
-  final _apiClient = MovieApiClient();
-  final _accountApiClient = AccountApiClient();
+  final _service = MovieService();
 
   final int movieId;
   final data = MovieDetailsData();
@@ -84,21 +84,6 @@ class MovieDetailsModel extends ChangeNotifier {
     _dateFormat = DateFormat.yMd(locale);
     _updateData(null, false);
     await loadMovieDetails(context);
-  }
-
-  Future<void> loadMovieDetails(BuildContext context) async {
-    try {
-      final movieDetails = await _apiClient.getMovieDetails(movieId, _locale);
-      final sessionId = await _sessionDataProvider.getSessionId();
-      var isFavorite = false;
-      if (sessionId != null) {
-        isFavorite = await _apiClient.isFavorite(movieId, sessionId);
-      }
-
-      _updateData(movieDetails, isFavorite);
-    } on ApiClientException catch (e) {
-      _handleApiClientException(e, context);
-    }
   }
 
   void _updateData(MovieDetailsResponse? details, bool isFavorite) {
@@ -165,17 +150,27 @@ class MovieDetailsModel extends ChangeNotifier {
     return '${hours}h ${minutes}m';
   }
 
-  Future<void> addToFavorite(BuildContext context) async {
-    final sessionId = await _sessionDataProvider.getSessionId();
-    final accountId = await _sessionDataProvider.getAccountId();
-    if (sessionId == null || accountId == null) return;
+  Future<void> loadMovieDetails(BuildContext context) async {
+    try {
+      final movieDetails =
+          await _service.loadMovieDetails(movieId: movieId, locale: _locale);
 
-    data.posterData = data.posterData.copyWith(isFavorite: !data.posterData.isFavorite);
+      _updateData(movieDetails.details, movieDetails.isFavorite);
+    } on ApiClientException catch (e) {
+      _handleApiClientException(e, context);
+    }
+  }
+
+  Future<void> addToFavorite(BuildContext context) async {
+    data.posterData =
+        data.posterData.copyWith(isFavorite: !data.posterData.isFavorite);
     notifyListeners();
 
     try {
-      await _accountApiClient.markAsFavorite(
-          accountId, sessionId, MediaType.movie, movieId, data.posterData.isFavorite);
+      _service.updateFavorite(
+        movieId: movieId,
+        isFavorite: data.posterData.isFavorite,
+      );
     } on ApiClientException catch (e) {
       _handleApiClientException(e, context);
     }
@@ -184,14 +179,14 @@ class MovieDetailsModel extends ChangeNotifier {
   String _stringFromDate(DateTime? date) =>
       date != null ? _dateFormat.format(date) : '';
 
-  MovieReleaseInfo? _getLocaleMovieReleaseInfo(MovieDetailsResponse details) {
+  MovieReleaseData? _getLocaleMovieReleaseInfo(MovieDetailsResponse details) {
     final releaseInfo = details.releaseInfo;
     final results = releaseInfo.results;
     for (var result in results) {
       if (result.iso == _countryCode) {
         final releaseInfo = result.releaseDates.first;
         final releaseDate = _stringFromDate(releaseInfo.releaseDate);
-        return MovieReleaseInfo(
+        return MovieReleaseData(
           certification: releaseInfo.certification,
           releaseDate: releaseDate,
           countryCode: '(${result.iso})',
@@ -226,7 +221,6 @@ class MovieDetailsModel extends ChangeNotifier {
           }
           members[name]?.add(member.job);
         }
-
       }
     }
 
